@@ -1,7 +1,7 @@
 ## Nice to meet you 👋 
 Hi, I’m @lishijie**e**, a Java developer,   
 my dream is to become an **E**ngineer 💖  
-- [book list](https://github.com/lishijiee/lishijiee/blob/main/bookList.md)  
+- [book-list](https://github.com/lishijiee/lishijiee/blob/main/bookList.md)  
 - [ling-long Fund](https://github.com/lishijiee/blob/main/ling-long.md)  
 
 [![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)

@@ -1,7 +1,8 @@
 ## Nice to meet you 👋 
 Hi, I’m @lishijie**e**, a Java developer,   
 my dream is to become an **E**ngineer 💖  
-[Book List](https://github.com/lishijiee/lishijiee/blob/main/bookList.md)  
+- [book list](https://github.com/lishijiee/lishijiee/blob/main/bookList.md)  
+- [ling-long Fund](https://github.com/lishijiee/blob/main/ling-long.md)  
 
 [![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)   
@@ -21,6 +22,10 @@ theme:
   merko 黄标青字
   radical 红标绿字
   dark 白标灰字
+
+TODO  
+[ling-long Fund](https://github.com/lishijiee/ling-long)
+
 lishijiee/lishijiee is a ✨ special ✨ repository because its `README.md` (this file) appears on your GitHub profile.
 You can click the Preview link to take a look at your changes.
 --->

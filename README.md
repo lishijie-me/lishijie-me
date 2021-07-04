@@ -2,7 +2,8 @@
 Hi, I’m @lishijie**e**, a Java developer,   
 my dream is to become an **E**ngineer
 
-[![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)
+[![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)   
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)
 <!---
 - 👀 I’m interested in ...
 - 🌱 I’m currently learning ...

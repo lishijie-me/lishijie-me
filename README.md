@@ -1,5 +1,9 @@
+## Nice to meet you 👋 
+Hi, I’m @lishijie**e**, a Java developer,   
+my dream is to become an **E**ngineer
+
+
 <!---
-- 👋 Hi, I’m @lishijiee
 - 👀 I’m interested in ...
 - 🌱 I’m currently learning ...
 - 💞️ I’m looking to collaborate on ...

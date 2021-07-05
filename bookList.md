@@ -5,3 +5,4 @@
 《Redis设计与实现》    
 《Redis实战》    
 《Redis开发与运维》    
+《Redis源码解析》    

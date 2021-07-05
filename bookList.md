@@ -7,3 +7,5 @@
 《Redis实战》    
 《Redis开发与运维》    
 《Redis源码解析》    
+
+《Java编程思想（第4版）》    

@@ -3,7 +3,8 @@ Hi, I’m @lishijie**e**, a Java developer,
 my dream is to become an **E**ngineer 💖  
 - 👀 I’m interested in ...   
 - 🌱 I’m currently learning ...   
- 
+- 💞️ I’m looking to collaborate on ...    
+
 - [book-list](https://github.com/lishijiee/lishijiee/blob/main/tech/bookList.md)  
 - [ling-long Fund](https://github.com/lishijiee/blob/main/tech/linglong.md)  
 

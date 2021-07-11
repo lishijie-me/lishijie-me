@@ -10,6 +10,7 @@
 7.`git push origin develop` //推送到远程develop分支 看自己要推送到哪个分支 前提远程有该分支  
   
 > git config 
+
 `git config --global user.name "xxx"`  
 `git config --global user.email "xxx"`    
 

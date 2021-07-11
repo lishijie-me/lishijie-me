@@ -21,3 +21,4 @@
 `git reset --mixed "版本序列号"`  回退到指定版本     
 `git stash`    
 `git stash pop`   
+

@@ -1,4 +1,4 @@
-
+github 上展示, 只需安装对应插件即可,
 ```mermaid
 graph LR
 A[JVM] --> B(基础知识)

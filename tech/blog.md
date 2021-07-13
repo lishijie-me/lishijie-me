@@ -13,3 +13,8 @@ jar包内方法报错, 最后排查原因是, 远程的jar包版本低, 没有�
 java.lang.NoSuchMethodError: io.netty.util.internal.StringUtil.indexOfNonWhiteSpace
 ```
 
+> 关于技术学习的心得
+
+```text
+Get Started Demo， 原理，实战，博客，源码解析，
+```

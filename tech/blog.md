@@ -9,7 +9,7 @@
 > 今日份异常
 
 jar包内方法报错, 最后排查原因是, 远程的jar包版本低, 没有这个方法
-```java
+```text
 java.lang.NoSuchMethodError: io.netty.util.internal.StringUtil.indexOfNonWhiteSpace
 ```
 

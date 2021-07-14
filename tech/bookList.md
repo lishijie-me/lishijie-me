@@ -6,7 +6,7 @@
 ```text
 1.主要讲了JVM的来龙去脉
 2.内存模型
-3.
+3.OutOfMemoryError
 ```
 
 《Redis设计与实现》    

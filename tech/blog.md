@@ -47,3 +47,8 @@ $ git reset --hard HEAD~3  回退到三次提交之前, 以此类推
 4.现在 直接强推代码
 $ git push -f
 ```
+
+```text
+记一次代码回退  
+https://juejin.cn/post/6985630098569297950
+```

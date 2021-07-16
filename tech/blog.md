@@ -38,11 +38,20 @@ Java中的实方法虚方法,主要含义是啥
 于是有了以下步骤
 
 1.备份
-2.版本回退
-git reset --hard HEAD^   回退到上一版本
-git reset --hard HEAD~3  回退到上面第三个版本
+2.查看当前的 `HEAD` 指向哪个版本
+```
+$ git log
+```
 
-3.现在 直接强推代码
-git push -f
+3.版本回退
+```
+$ git reset --hard commit_id 退回/前进 到指定版本
+$ git reset --hard HEAD^   回退到上一版本
+$ git reset --hard HEAD~3  回退到三次提交之前, 以此类推
 
+```
+
+4.现在 直接强推代码
+```
+$ git push -f
 ```

@@ -27,3 +27,11 @@ D --> DE[GC 疑难情况问题分析*]
 D --> DF[JVM 常见面试问题汇总*]
 
 ```
+
+
+```text
+编译: javac demo/jvm/HelloByteCode.java
+查看字节码: javap -c demo.jvm.HelloByteCode
+查看详细字节码: javap -c -verbose demo.jvm.HelloByteCode
+
+```

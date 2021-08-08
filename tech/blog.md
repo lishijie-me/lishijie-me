@@ -25,28 +25,6 @@ Get Started Demo， 原理，实战，博客，源码解析，
 Java中的实方法虚方法,主要含义是啥
 ```
 
-> Git Hook
-
-```text
-
-```
-
-> 记一次 代码提交版本回退问题
-
-```text
-今天E同学, 把配置文件提交上去了, 需要删除
-于是有了以下步骤
-
-1.备份
-2.查看当前的 `HEAD` 指向哪个版本
-$ git log
-3.版本回退
-$ git reset --hard commit_id 退回/前进 到指定版本
-$ git reset --hard HEAD^   回退到上一版本
-$ git reset --hard HEAD~3  回退到三次提交之前, 以此类推
-4.现在 直接强推代码
-$ git push -f
-```
 
 ```text
 记一次代码回退  
@@ -54,5 +32,6 @@ https://juejin.cn/post/6985630098569297950
 ```
 
 ```text
-正身以俟时, 守己而律物
+读文档记录下的一些词汇 & 短句
+https://juejin.cn/post/6993874732420431885
 ```

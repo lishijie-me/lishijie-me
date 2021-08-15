@@ -1,21 +1,14 @@
 ## Nice to meet you 👋 
-Hi, I’m @lishijie**e**, a Java developer,   
-my dream is to become an **E**ngineer 💖  
+Hi, I’m @lishijie**e**, a Java developer 💖
 
-
-- [book-list](https://github.com/lishijiee/lishijiee/blob/main/tech/bookList.md)  
-- [ling-long Fund](https://github.com/lishijiee/blob/main/tech/linglong.md)  
-
-```text
-1. 基于redis的SSO单点登录  
-2. 
-```
 
 [![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)   
 
 <!---
 
+- [book-list](https://github.com/lishijiee/lishijiee/blob/main/tech/bookList.md)  
+- [ling-long Fund](https://github.com/lishijiee/blob/main/tech/linglong.md)  
 - 💞️ I’m looking to collaborate on ...    
 - 📫 How to reach me ...   
 - 👀 I’m interested in ...

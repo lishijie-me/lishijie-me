@@ -1,5 +1,4 @@
-## Nice to meet you 👋 
-> Hi, I’m @lishijie**e**, a Java developer 💖  
+## Nice to meet you 👋  
 > 📫 
 
 <img src="https://ghchart.rshah.org/409ba5/lishijiee"/>
@@ -11,7 +10,7 @@
 
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)   
 
-
+> Hi, I’m @lishijie**e**, a Java developer 💖 
 - 💞️ I’m looking to collaborate on ...    
 - 📫 How to reach me ...   
 - 👀 I’m interested in ...

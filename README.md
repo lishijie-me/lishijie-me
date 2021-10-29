@@ -1,7 +1,7 @@
 ## Nice to meet you 👋  
 > 📫 
 
-<img src="https://ghchart.rshah.org/409ba5/lishijiee"/>
+![Github COntribution](https://ghchart.rshah.org/409ba5/lishijiee)
 
 [![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)  
 

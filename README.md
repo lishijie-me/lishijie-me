@@ -6,9 +6,9 @@
 ![Github COntribution](https://ghchart.rshah.org/409ba5/lishijiee)
 --->
 
-[![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)  
+[![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)    
 
-
+![访问次数](https://visitor-badge.glitch.me/badge?page_id=lishijiee.readme)  
 <!---
 
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)   

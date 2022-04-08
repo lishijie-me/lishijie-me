@@ -1,17 +1,15 @@
-## Nice to meet you 👋  
-
-
-<!---
-> 📫 
-![Github COntribution](https://ghchart.rshah.org/409ba5/lishijiee)
---->
+# Nice to meet you 👋
 
 [![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)    
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)  
 
-![访问次数](https://visitor-badge.glitch.me/badge?page_id=lishijiee.readme)  
+## 【repo 仓库】  
+[个人学习成长记录笔记](https://github.com/lishijiee/eee)
+
 <!---
+![访问次数](https://visitor-badge.glitch.me/badge?page_id=lishijiee.readme)  
 
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)   
+![Github COntribution](https://ghchart.rshah.org/409ba5/lishijiee)
 
 > Hi, I’m @lishijie**e**, a Java developer 💖 
 - 💞️ I’m looking to collaborate on ...    
@@ -20,6 +18,8 @@
 - 🌱 I’m currently learning ...
 - 💞️ I’m looking to collaborate on ...
 - 📫 How to reach me ...
+
+
 
 theme:
   synthwave 白标红字

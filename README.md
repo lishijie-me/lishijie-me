@@ -1,12 +1,21 @@
 # Nice to meet you 👋
 
+- xxx
+- yyy
+- zzz
+
 [![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)    
+
+
+<!---
+
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)  
+
 
 ## 【repo 仓库】  
 [个人学习成长记录笔记](https://github.com/lishijiee/eee)
 
-<!---
+
 ![访问次数](https://visitor-badge.glitch.me/badge?page_id=lishijiee.readme)  
 
 ![Github COntribution](https://ghchart.rshah.org/409ba5/lishijiee)

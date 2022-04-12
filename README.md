@@ -4,6 +4,31 @@
 - yyy
 - zzz
 
+
+<h2> Hi, I'm lishijiee!<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50"></h2>
+<img align='right' src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="230">
+<p><em>Software Enginner at Shanghai </a><img src="https://media.giphy.com/media/fYSnHlufseco8Fh93Z/giphy.gif" width="30"></br>
+Developer Consultant at <a href="https://www.jd.com">JD.com</a><img src="https://media.giphy.com/media/WUlplcMpOCEmTGBtBW/giphy.gif" width="30"> 
+</em></p>
+
+### <img src="https://media.giphy.com/media/VgCDAzcKvsR6OM0uWg/giphy.gif" width="50"> A little more about me...
+
+```javascript
+const lishijiee = {
+  pronouns: "she",
+  code: [JAVA],
+  tools: [Reactor-JAVA, Docker,Spring-Boot,Spring-Cloud],
+  architecture: ["microservices", "event-driven", "design system pattern"],
+  communities: {
+      dromara: "Founder of https://dromara.org, author to hmily, raincat, myth",
+      apache: "Founder of Apache ShenYu (incubator) / Apache ShardingSphere Committer",
+  },
+  challenge: "No Code"
+}
+```
+
+
+
 [![GitHub lishijiee](https://img.shields.io/github/followers/lishijiee?label=follow&style=social)](https://github.com/lishijiee)
 [![Commits Badge](https://badges.pufler.dev/commits/monthly/lishijiee)](https://badges.pufler.dev)
 [![Repos Badge](https://badges.pufler.dev/repos/lishijiee)](https://badges.pufler.dev)

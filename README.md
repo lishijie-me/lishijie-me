@@ -1,9 +1,3 @@
-# Nice to meet you 👋
-
-- xxx (active)
-- yyy
-- zzz
-
 
 <h2> Hi, I'm lishijiee!<img src="https://media.giphy.com/media/mGcNjsfWAjY5AEZNw6/giphy.gif" width="50"></h2>
 <img align='right' src="https://media.giphy.com/media/M9gbBd9nbDrOTu1Mqx/giphy.gif" width="230">
@@ -20,8 +14,8 @@ const lishijiee = {
   tools: [Reactor-JAVA, Docker,Spring-Boot,Spring-Cloud],
   architecture: ["microservices", "event-driven", "design system pattern"],
   communities: {
-      dromara: "Founder of https://dromara.org, author to hmily, raincat, myth",
-      apache: "Founder of Apache ShenYu (incubator) / Apache ShardingSphere Committer",
+      eqing: "Founder of https://eqing.org, author to sqily, spaceX",
+      apache: "Founder of Apache SpaceX (incubator) Committer",
   },
   challenge: "No Code"
 }

@@ -4,7 +4,15 @@
 - yyy
 - zzz
 
+[![GitHub Thaiane](https://img.shields.io/github/followers/lishijiee?label=follow&style=social)](https://github.com/Thaiane)
+[![Commits Badge](https://badges.pufler.dev/commits/monthly/lishijiee)](https://badges.pufler.dev)
+[![Repos Badge](https://badges.pufler.dev/repos/lishijiee)](https://badges.pufler.dev)
+[![Years Badge](https://badges.pufler.dev/years/lishijiee)](https://badges.pufler.dev)
+  
+
 [![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)    
+
+
 
 
 <!---

@@ -9,7 +9,7 @@ Developer at <a href="https://www.jd.com">JD.com</a><img src="https://media.giph
 
 ```javascript
 const lishijiee = {
-  pronouns: "she",
+  pronouns: "he",
   code: [JAVA],
   tools: [Reactor-JAVA, Docker,Spring-Boot,Spring-Cloud],
   architecture: ["microservices", "event-driven", "design system pattern"],

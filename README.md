@@ -11,13 +11,7 @@ Developer at <a href="https://www.jd.com">xxx.com</a><img src="https://media.gip
 const lishijiee = {
   pronouns: "he",
   code: [JAVA],
-  tools: [Reactor-JAVA, Docker,Spring-Boot,Spring-Cloud],
-  architecture: ["microservices", "event-driven", "design system pattern"],
-  communities: {
-      eqing: "Founder of https://eqing.org, author to sqily, spaceX",
-      apache: "Founder of Apache SpaceX (incubator) Committer",
-  },
-  challenge: "No Code"
+  tools: [Reactor-JAVA, Docker,Spring-Boot,Spring-Cloud]
 }
 ```
 
@@ -35,7 +29,13 @@ const lishijiee = {
 
 <!---
 
-
+,
+  architecture: ["microservices", "event-driven", "design system pattern"],
+  communities: {
+      eqing: "Founder of https://eqing.org, author to sqily, spaceX",
+      apache: "Founder of Apache SpaceX (incubator) Committer",
+  },
+  challenge: "No Code"
 
 ## 【repo 仓库】  
 [个人学习成长记录笔记](https://github.com/lishijiee/eee)

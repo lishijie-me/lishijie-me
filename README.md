@@ -11,7 +11,7 @@ Developer at <a href="https://www.jd.com">xxx.com</a><img src="https://media.gip
 const lishijiee = {
   pronouns: "he",
   code: [JAVA],
-  tools: [Reactor-JAVA, Docker,Spring-Boot,Spring-Cloud],
+  tools: [Reactor-JAVA, Docker, Spring-Boot, Spring-Cloud, Vue.js],
   architecture: ["microservices", "event-driven", "design system pattern"],
   repositories: {
       vshop: "a test repo for Spring-Cloud-Alibaba",

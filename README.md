@@ -13,11 +13,11 @@ const lishijiee = {
   code: [JAVA],
   tools: [Reactor-JAVA, Docker,Spring-Boot,Spring-Cloud],
   architecture: ["microservices", "event-driven", "design system pattern"],
-  communities: {
-      eqing: "Founder of https://eqing.org, author to sqily, spaceX",
-      apache: "Founder of Apache SpaceX (incubator) Committer",
+  repositories: {
+      vshop: "a test repo for Spring-Cloud-Alibaba",
+      sa: "res",
   },
-  challenge: "No Code"
+  challenge: "Java tech system"
 }
 ```
 

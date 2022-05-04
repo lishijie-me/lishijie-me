@@ -10,7 +10,7 @@ Developer at <a href="https://www.jd.com">xxx.com</a><img src="https://media.gip
 ```javascript
 const lishijiee = {
   pronouns: "he",
-  code: [JAVA],
+  code: [JAVA, JavaScript, Python, C],
   tools: [Reactor-JAVA, Docker,Spring-Boot,Spring-Cloud],
   architecture: ["microservices", "event-driven", "design system pattern"],
   communities: {

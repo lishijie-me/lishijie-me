@@ -4,6 +4,7 @@
 
 
 ## 【repo 仓库】  
+- [我的笔记](https://github.com/lishijiee/Notes)
 - [lishijiee](https://github.com/lishijiee/lishijiee)
 - [个人学习成长记录笔记](https://github.com/lishijiee/eee)  
 - [基于 Spring-Cloud-Alibaba 的交易系统](https://github.com/lishijiee/ling-long)  
@@ -15,7 +16,6 @@
 - [rui-ying](https://github.com/lishijiee/rui-ying)
 - [sun-qian](https://github.com/lishijiee/sun-qian)
 - [仓储系统](https://github.com/lishijiee/cangchu)
-- [TODO](https://github.com/lishijiee/eee)
 - [TODO](https://github.com/lishijiee/eee)
 - [TODO](https://github.com/lishijiee/eee)
 - [TODO](https://github.com/lishijiee/eee)

@@ -4,13 +4,14 @@
 
 
 ## 【repo 仓库】  
-- [我的笔记](https://github.com/lishijiee/Notes)
 - [lishijiee](https://github.com/lishijiee/lishijiee)
-- [个人学习成长记录笔记](https://github.com/lishijiee/eee)  
-- [基于 Spring-Cloud-Alibaba 的交易系统](https://github.com/lishijiee/ling-long)  
-- [基于 Java 的代码技术验证](https://github.com/lishijiee/Java-demo)  
+- [我的笔记Notes](https://github.com/lishijiee/Notes)
+- [个人学习成长记录笔记(private)](https://github.com/lishijiee/eee)  
+- [基于 Spring-Cloud-Alibaba 的交易系统](https://github.com/lishijiee/vshop)  
+- [基于 Spring-Boot 平台的技术验证仓库](https://github.com/lishijiee/spring-boot-demos)
+- [基于 Java 的代码技术验证](https://github.com/lishijiee/Java-demo)   
 - [面试指北](https://github.com/lishijiee/Java-North)  
-- [我的家装笔记](https://github.com/lishijiee/Home-Decorate)  
+<br/><br/><br/>
 - [yun-xi](https://github.com/lishijiee/yun-xi)  
 - [养老基金ling-long](https://github.com/lishijiee/ling-long)
 - [rui-ying](https://github.com/lishijiee/rui-ying)
@@ -19,4 +20,4 @@
 - [TODO](https://github.com/lishijiee/eee)
 - [TODO](https://github.com/lishijiee/eee)
 - [TODO](https://github.com/lishijiee/eee)
-- [TODO](https://github.com/lishijiee/eee)
+- [我的家装笔记](https://github.com/lishijiee/Home-Decorate)  

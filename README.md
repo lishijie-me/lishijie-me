@@ -4,7 +4,10 @@
 
 
 ## 【repo 仓库】  
-- [lishijiee](https://github.com/lishijiee/lishijiee)
+
+- [个人主页仓库](https://github.com/lishijiee/lishijiee)
+ 
+<!-- 
 - [我的笔记Notes](https://github.com/lishijiee/Notes)
 - [个人学习成长记录笔记(private)](https://github.com/lishijiee/eee)  
 - [基于 Spring-Cloud-Alibaba 的交易系统](https://github.com/lishijiee/vshop)  
@@ -21,3 +24,5 @@
 - [TODO](https://github.com/lishijiee/eee)
 - [TODO](https://github.com/lishijiee/eee)
 - [我的家装笔记](https://github.com/lishijiee/Home-Decorate)  
+
+-->

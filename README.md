@@ -5,10 +5,12 @@
 
 ## 【repo 仓库】  
 
+
+- [我的笔记Notes](https://github.com/lishijiee/Notes) 
+- [我的日常](https://github.com/lishijiee/Daily)
+- [我的日常Web](https://github.com/lishijiee/daily-web)
+<!--
 - [个人主页仓库](https://github.com/lishijiee/lishijiee)
- 
-<!-- 
-- [我的笔记Notes](https://github.com/lishijiee/Notes)
 - [个人学习成长记录笔记(private)](https://github.com/lishijiee/eee)  
 - [基于 Spring-Cloud-Alibaba 的交易系统](https://github.com/lishijiee/vshop)  
 - [基于 Spring-Boot 平台的技术验证仓库](https://github.com/lishijiee/spring-boot-demos)

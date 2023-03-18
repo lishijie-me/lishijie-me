@@ -3,7 +3,7 @@
 > 生存还是毁灭，这是一个问题
 
 
-<details><summary><font size="40" color="red">显示更多</font></summary>  
+<details><summary><font color="red">显示更多</font></summary>  
 
 [![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)    
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)  

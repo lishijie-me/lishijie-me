@@ -1,14 +1,12 @@
 深深理解了 莎翁的这句经典为什么是经典
 
-> 生存还是毁灭，这是一个问题
+> 生存还是毁灭，这是一个问题  
 
-
-<details><summary><font color="red">显示更多</font></summary>  
-
-## 【提交记录】 
 
 [![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)    
 [![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)  
+
+<details><summary><font color="red">显示更多</font></summary>  
 
 ## 【我的博客】
 - [我的博客](https://lishijiee.github.io)  

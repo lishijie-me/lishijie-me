@@ -3,20 +3,20 @@
 > 生存还是毁灭，这是一个问题  
 
 
-[![lishijiee's github stats](https://github-readme-stats.vercel.app/api?username=lishijiee&theme=tokyonight)](https://github.com/lishijiee/github-readme-stats)    
-[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijiee&layout=compact)](https://github.com/lishijiee/github-readme-stats)  
+[![shijiev's github stats](https://github-readme-stats.vercel.app/api?username=shijiev&theme=tokyonight)](https://github.com/shijiev/github-readme-stats)    
+[![Top Langs](https://github-readme-stats.vercel.app/api/top-langs/?username=shijiev&layout=compact)](https://github.com/shijiev/github-readme-stats)  
 
 <details><summary><font color="red">显示更多</font></summary>  
 
 ## 【我的博客】
-- [我的博客](https://lishijiee.github.io)  
+- [我的博客](https://shijiev.github.io)  
 
 ## 【repo 仓库】  
 
 
-- [我的笔记Notes](https://github.com/lishijiee/Notes) 
-- [我的日常](https://github.com/lishijiee/Daily)
-- [我的日常Web](https://github.com/lishijiee/daily-web)
+- [我的笔记Notes](https://github.com/shijiev/Notes) 
+- [我的日常](https://github.com/shijiev/Daily)
+- [我的日常Web](https://github.com/shijiev/daily-web)
 
 </details>
 <!--

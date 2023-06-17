@@ -1,6 +1,5 @@
-深深理解了 莎翁的这句经典为什么是经典
 
-> 生存还是毁灭，这是一个问题  
+> 行是知之始，知是行之成  
 
 
 [![shijiev's github stats](https://github-readme-stats.vercel.app/api?username=shijiev&theme=tokyonight)](https://github.com/shijiev/github-readme-stats)    
@@ -8,6 +7,7 @@
 
 <details><summary>显示更多</summary>  
 
-- [我的博客（筹）](https://shijiev.github.io)  
+🌱 I’m currently learning Guitar  <br/>
+- [我的博客（筹）](https://shijiev.github.io)
 
 </details>

@@ -7,7 +7,7 @@
 - :seedling: 干货：[公众号『 成行技术 』](https://ixxx.jpg)
 - :love_letter: 微信：[chengx-tech](https://xxx.jpg) - 备注来意
 - :feet: 我的知识星球：[大厂高并发秒杀系统、并发编程、性能调优、框架源码、分布式、微服务](https://)
-
+- :book: 我读过的书：[推荐书单]()
 
 ### 今年的努力 ✨
 

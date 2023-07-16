@@ -2,7 +2,7 @@
 
 > **行是知之始，知是行之成**  
 
-- :dog: 六年技术老兵
+- :dog: 技术学习一直在路上
 - :bus: 作品：[`《xxx：yyy》`](https://github.com/shijiev/xxx) | [`《yyy：zzz》`](https://github.com/shijiev/xxx)
 - :seedling: 干货：[公众号『 成行技术 』](https://ixxx.jpg)
 - :love_letter: 微信：[chengx-tech](https://xxx.jpg) - 备注来意

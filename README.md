@@ -18,7 +18,5 @@
 <summary>显示更多</summary>  
 
 🌱 I’m currently learning Guitar  <br/>
-- [我的博客（筹）](https://shijiev.github.io)
-
 
 </details>

@@ -2,7 +2,7 @@
 
 > **行是知之始，知是行之成**  
 
-- :dog: 六年技术老兵
+- :dog: 技术小学生一枚：技术学习一直在路上
 - :bus: 作品：
   - [`《sca-shop：sca商城》`](https://github.com/shijiev/sca-shop) | 专栏讲解文章，请关注👇[公众号『 成行技术 』](https://mmbiz.qpic.cn/mmbiz_jpg/9l4ibqLY9LrQs0tH9r5yd6FNdrcKibBic7nXmg52AO8VWVSTglVjic4WTjYAHXEZED3mXuN2uZibeiapOiaqGPc1Rhcaw/640?wx_fmt=jpeg)查看，有疑问请添加👇[chengx-tech](https://mmbiz.qpic.cn/mmbiz_png/9l4ibqLY9LrTUzC7LJqjlV9fQRRyHIxNJr3hiaqicpmqTib6z6wxro8eUX7x7xXgFUhawm1SMsACNXEf1tZnm83Whg/640?wx_fmt=png) - 备注来意
   - [`《Generic-Views：前后端分离简单入门》`](https://github.com/shijiev/Generic-Views) | 专栏讲解文章，请关注👇[公众号『 成行技术 』](https://mmbiz.qpic.cn/mmbiz_jpg/9l4ibqLY9LrQs0tH9r5yd6FNdrcKibBic7nXmg52AO8VWVSTglVjic4WTjYAHXEZED3mXuN2uZibeiapOiaqGPc1Rhcaw/640?wx_fmt=jpeg)查看，有疑问请添加👇[chengx-tech](https://mmbiz.qpic.cn/mmbiz_png/9l4ibqLY9LrTUzC7LJqjlV9fQRRyHIxNJr3hiaqicpmqTib6z6wxro8eUX7x7xXgFUhawm1SMsACNXEf1tZnm83Whg/640?wx_fmt=png) - 备注来意

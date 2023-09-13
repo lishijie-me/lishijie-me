@@ -3,7 +3,7 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
+logs/
 ### STS ###
 .apt_generated
 .classpath
@@ -21,6 +21,7 @@ target/
 mvnw
 mvnw.cmd
 .mvn
+# .mvn/wrapper/maven-wrapper.jar
 
 
 ### NetBeans ###
@@ -35,4 +36,3 @@ build/
 
 ### VS Code ###
 .vscode/
-*.yml

@@ -4,21 +4,14 @@
 
 - :dog: 技术小学生一枚：技术学习一直在路上
 - :bus: 我的作品：
-  - [`《Spring Boot 代码案例》系列`](#)
+
+  - [`《Spring Boot 代码案例》系列`]()
   <details>
     <summary>点击查看更多</summary>
 
-  - [ ] [`《Spring Boot 代码案例》（一）：`](https://github.com/shijiev/sca-trade) <br/>
-  - [ ] [`《Spring Boot 代码案例》（二）：`](https://github.com/shijiev/sca-trade) <br/>
-  - [ ] [`《Spring Boot 代码案例》（二）：`](https://github.com/shijiev/sca-trade) <br/>
-  </details>
-
-## TODO
-  - [`《jdk-21-src：源码阅读》`]()
-  <details>
-    <summary>点击查看更多</summary>
-
-  - [ ] [`《jdk-11-src：源码阅读》（一）：`](#) <br/>
+  - [ ] [`《Spring Boot 代码案例》（一）：`](https://github.com/lishijie-me/spring-boot-demos) <br/>
+  - [ ] [`《Spring Boot 代码案例》（二）：`](https://github.com/lishijie-me/spring-boot-demos) <br/>
+  - [ ] [`《Spring Boot 代码案例》（三）：`](https://github.com/lishijie-me/spring-boot-demos) <br/>
   </details>
 
 - :seedling: 干货：[公众号『 成行技术 』](https://ixxx.jpg)

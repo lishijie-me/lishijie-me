@@ -4,23 +4,23 @@
 
 - :dog: 技术小学生一枚：技术学习一直在路上
 - :bus: 我的作品：
-  - [`《sca-trade：订单交易系统》系列文章`](https://github.com/shijiev/sca-trade)
+  - [`《Spring Boot 代码案例》系列`](#)
   <details>
     <summary>点击查看更多</summary>
 
-  - [ ] [`《sca-trade：订单交易系统》（一）：`](https://github.com/shijiev/sca-trade) <br/>
-  - [ ] [`《sca-trade：订单交易系统》（二）：`](https://github.com/shijiev/sca-trade) <br/>
-  - [ ] [`《sca-trade：订单交易系统》（二）：`](https://github.com/shijiev/sca-trade) <br/>
+  - [ ] [`《Spring Boot 代码案例》（一）：`](https://github.com/shijiev/sca-trade) <br/>
+  - [ ] [`《Spring Boot 代码案例》（二）：`](https://github.com/shijiev/sca-trade) <br/>
+  - [ ] [`《Spring Boot 代码案例》（二）：`](https://github.com/shijiev/sca-trade) <br/>
   </details>
 
-  - [`《jdk-11-src：源码阅读》`](https://github.com/shijiev/jdk-11-src)
+## TODO
+  - [`《jdk-21-src：源码阅读》`]()
   <details>
     <summary>点击查看更多</summary>
 
-  - [ ] [`《jdk-11-src：源码阅读》（一）：`](https://github.com/shijiev/jdk-11-src) <br/>
-  - [ ] [`《jdk-11-src：源码阅读》（二）：`](https://github.com/shijiev/jdk-11-src) <br/>
-  - [ ] [`《jdk-11-src：源码阅读》（二）：`](https://github.com/shijiev/jdk-11-src) <br/>
+  - [ ] [`《jdk-11-src：源码阅读》（一）：`](#) <br/>
   </details>
+
 - :seedling: 干货：[公众号『 成行技术 』](https://ixxx.jpg)
 
 - :book: 我读过的书：[推荐书单]()
@@ -39,7 +39,7 @@
   
 
 🌱 I’m currently learning Guitar  <br/>
-- [我的博客（筹）](https://shijiev.github.io)
+- [我的博客（筹）](https://lishijie.github.io/yuedu)
 
 
 

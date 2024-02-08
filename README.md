@@ -27,13 +27,12 @@
 
 ## 今年的努力 ✨  - Effort
 
-
-[![成行 ‘s github stats](https://github-readme-stats.vercel.app/api?username=shijiev&theme=tokyonight)](https://github.com/shijiev/github-readme-stats)
-[![lagus](https://github-readme-stats.vercel.app/api/top-langs/?username=shijiev&layout=compact)](https://github.com/shijiev/github-readme-stats)
+[![成行 ‘s github stats](https://github-readme-stats.vercel.app/api?username=shijiev&theme=tokyonight)](https://github.com/lishijie-me/github-readme-stats)
+[![lagus](https://github-readme-stats.vercel.app/api/top-langs/?username=lishijie-me&layout=compact)](https://github.com/lishijie-me/github-readme-stats)
   
 
 🌱 I’m currently learning Guitar  <br/>
-- [我的博客（筹）](https://lishijie.github.io/yuedu)
+- [我的博客（筹）](https://lishijie-me.github.io/yuedu)
 
 
 

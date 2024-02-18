@@ -32,7 +32,7 @@
   
 
 🌱 I’m currently learning Guitar  <br/>
-- [我的博客（筹）](https://lishijie-me.github.io/yuedu?target=_blank)
+- [我的博客（筹）](https://lishijie-me.github.io/yuedu)
 
 
 ## 跑起来-Running

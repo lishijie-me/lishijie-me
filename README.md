@@ -9,7 +9,7 @@
 
 ## 今年的努力 ✨  - Effort
 
-[![成行 ‘s github stats](https://github-readme-stats.vercel.app/api?username=lishijie-me&theme=tokyonight)](https://github.com/lishijie-me/github-readme-stats)
+[![my github stats](https://github-readme-stats.vercel.app/api?username=lishijie-me&theme=tokyonight)](https://github.com/lishijie-me/github-readme-stats)
 [![lagus]( https://github-readme-stats.vercel.app/api/top-langs/?username=lishijie-me&layout=compact)](https://github.com/lishijie-me/github-readme-stats)
 
 
@@ -18,5 +18,3 @@
 
 
 </details>
-
-

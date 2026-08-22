@@ -12,363 +12,345 @@
             font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
         body {
-            background: linear-gradient(135deg,#e8edf7 0%,#f5f7fa 100%);
-            min-height:100vh;
-            padding:40px 20px;
-        }
-        .wrap {
-            max-width:600px;
-            margin:0 auto;
+            background: #f7f8fa;
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 16px;
         }
         h1 {
-            text-align:center;
-            margin-bottom:8px;
+            text-align: center;
+            margin-bottom: 24px;
             color:#1f2937;
-            font-size:26px;
-        }
-        .tip{
-            text-align:center;
-            color:#6b7280;
-            font-size:13px;
-            margin-bottom:24px;
+            font-size:22px;
         }
         .config-area{
             background:#fff;
             padding:16px;
-            border-radius:12px;
+            border-radius:10px;
             margin-bottom:20px;
+            box-shadow:0 1px 3px rgba(0,0,0,0.08);
         }
-        .config-area input{
+        .form-row{
+            margin-bottom:12px;
+        }
+        label{
+            display:block;
+            font-size:14px;
+            margin-bottom:4px;
+            color:#4b5563;
+        }
+        input{
             width:100%;
             padding:10px;
-            margin:6px 0;
             border:1px solid #d1d5db;
-            border-radius:8px;
-        }
-        #saveConfig{
-            width:100%;
-            padding:10px;
-            background:#2563eb;
-            color:#fff;
-            border:none;
-            border-radius:8px;
-            cursor:pointer;
+            border-radius:6px;
+            font-size:14px;
         }
         .input-wrap{
             background:#fff;
             padding:16px;
-            border-radius:12px;
+            border-radius:10px;
             margin-bottom:20px;
+            box-shadow:0 1px 3px rgba(0,0,0,0.08);
         }
         .row{
             display:flex;
-            gap:10px;
+            gap:8px;
             margin-bottom:10px;
         }
-        input{
-            padding:11px 14px;
-            border:1px solid #d1d5db;
-            border-radius:8px;
-            font-size:15px;
-        }
-        #songName{
-            flex:1.2;
-        }
-        #singer{
+        .row input{
             flex:1;
         }
-        #songRemark{
-            width:100%;
-        }
-        #addSongBtn{
-            width:100%;
-            padding:12px;
-            background:#2563eb;
-            color:#fff;
+        button{
+            padding:9px 14px;
             border:none;
-            border-radius:8px;
+            border-radius:6px;
             cursor:pointer;
-            font-size:15px;
+            font-size:14px;
+            background:#2563eb;
+            color:white;
+        }
+        button:disabled{
+            background:#94a3b8;
+            cursor:not-allowed;
         }
         .song-item{
             background:#fff;
-            padding:16px 18px;
-            border-radius:12px;
-            margin-bottom:12px;
-            box-shadow:0 2px 8px rgba(0,0,0,0.06);
             display:flex;
+            justify-content:space-between;
             align-items:center;
-            gap:12px;
+            padding:12px 14px;
+            border-radius:8px;
+            margin-bottom:8px;
+            box-shadow:0 1px 2px rgba(0,0,0,0.06);
         }
-        .info{
-            flex:1;
-        }
-        .song-title{
-            font-size:16px;
-            color:#1f2937;
-        }
-        .song-singer{
-            font-size:13px;
-            color:#6b7280;
-        }
-        .song-remark{
-            font-size:13px;
-            color:#4b5563;
-            margin-top:4px;
-        }
-        .del{
-            color:#ef4444;
-            cursor:pointer;
+        .song-info{
             font-size:14px;
         }
+        .del-btn{
+            background:#ef4444;
+            padding:6px 10px;
+            font-size:13px;
+        }
+        .log{
+            background:#eef2ff;
+            padding:10px;
+            border-radius:8px;
+            font-size:12px;
+            white-space:pre-wrap;
+            max-height:160px;
+            overflow:auto;
+        }
         .back-home{
-            margin-top:40px;
+            margin-top:30px;
             text-align:center;
         }
         .back-home a{
             color:#2563eb;
             text-decoration:none;
-        }
-        .log{
-            background:#eee;
-            padding:10px;
-            font-size:12px;
-            margin:12px 0;
-            border-radius:8px;
-            white-space:pre-wrap;
-            max-height:160px;
-            overflow:auto;
+            font-size:14px;
         }
     </style>
 </head>
 <body>
-<div class="wrap">
-    <h1>🎵 随手歌单</h1>
-    <div class="tip">数据保存到Gitee songlist.md，多设备查看</div>
-
-    <div class="config-area">
-        <div>Gitee Token：</div>
-        <input id="tokenInput" placeholder="gitee私人token">
-        <div>仓库(用户名/仓库名)：</div>
-        <input id="repoInput" placeholder="例如 abc/100‑days2026">
-        <button id="saveConfig">保存配置并加载歌单</button>
+<h1>🎵 随手歌单</h1>
+<div class="config-area">
+    <div class="form-row">
+        <label>
+            <input type="checkbox" id="useGlobalCfg" checked>
+            使用全局Gitee配置（取消为本页独立仓库/token）
+        </label>
     </div>
-
-    <div class="input-wrap">
-        <div class="row">
-            <input id="songName" placeholder="歌曲名称">
-            <input id="singer" placeholder="歌手">
-        </div>
-        <input id="songRemark" placeholder="备注（心情/场景，选填）">
-        <br>
-        <button id="addSongBtn">添加到歌单</button>
+    <div class="form-row">
+        <label>仓库(用户名/仓库名)</label>
+        <input id="repoInput" placeholder="你的名字/100‑days2026">
     </div>
-
-    <div id="songListBox"></div>
-    <div id="logBox" class="log"></div>
-
-    <div class="back-home">
-        <a href="./index.html">← 返回工具导航首页</a>
+    <div class="form-row">
+        <label>Gitee Token</label>
+        <input id="tokenInput" type="password" placeholder="access_token">
+    </div>
+    <div class="form-row">
+        <button id="loadBtn">加载远程歌单</button>
     </div>
 </div>
 
+<div class="input-wrap">
+    <div class="row">
+        <input id="songName" placeholder="歌曲名">
+        <input id="singerName" placeholder="歌手">
+        <button id="addBtn">添加</button>
+    </div>
+</div>
+
+<div id="listWrap"></div>
+
+<div class="log" id="logBox"></div>
+
+<div class="back-home">
+    <a href="./index.html">← 返回工具导航首页</a>
+</div>
+
+<script src="./giteeApiUtils.js"></script>
 <script>
-    const STORAGE_KEY = "gitee_todo_config";
-    // 修改为你的仓库
-    const DEFAULT_REPO = "你的用户名/100‑days2026";
+    const PAGE_LOCAL_KEY = "songlist_local_config";
+    const PAGE_USE_GLOBAL_KEY = "songlist_use_global";
+    const LOCAL_CACHE_KEY = "songlist_cache";
 
-    const tokenInput = document.getElementById("tokenInput");
-    const repoInput = document.getElementById("repoInput");
-    const saveConfigBtn = document.getElementById("saveConfig");
-    const songNameEl = document.getElementById("songName");
-    const singerEl = document.getElementById("singer");
-    const songRemarkEl = document.getElementById("songRemark");
-    const addSongBtn = document.getElementById("addSongBtn");
-    const songListBox = document.getElementById("songListBox");
-    const logBox = document.getElementById("logBox");
+    const repoInput = document.getElementById('repoInput');
+    const tokenInput = document.getElementById('tokenInput');
+    const useGlobalCfgCb = document.getElementById('useGlobalCfg');
+    const songNameInput = document.getElementById('songName');
+    const singerNameInput = document.getElementById('singerName');
+    const addBtn = document.getElementById('addBtn');
+    const loadBtn = document.getElementById('loadBtn');
+    const listWrap = document.getElementById('listWrap');
+    const logBox = document.getElementById('logBox');
 
-    let config = {token:"", repo:""};
     let fileSha = null;
+    let songList = [];
 
-    function log(msg){
-        logBox.innerText += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
-        logBox.scrollTop = logBox.scrollHeight;
+    // 获取页面是否开启全局配置
+    function getPageUseGlobal(){
+        const s = localStorage.getItem(PAGE_USE_GLOBAL_KEY);
+        return s === null ? true : (s === "true");
+    }
+    function savePageUseGlobal(flag){
+        localStorage.setItem(PAGE_USE_GLOBAL_KEY, String(flag));
     }
 
-    function toBase64(str){
-        return btoa(unescape(encodeURIComponent(str)));
-    }
-
-    // 增加空值保护 + 清除base64换行空白
-    function fromBase64(b64){
-        if(!b64) return "";
-        b64 = b64.replace(/\s/g, "");
-        return decodeURIComponent(escape(atob(b64)));
-    }
-
-    //读取本地存储
-    function loadConfig(){
-        const str = localStorage.getItem(STORAGE_KEY);
-        if(str){
-            config = JSON.parse(str);
-            tokenInput.value = config.token;
-            repoInput.value = config.repo;
-            log("✅已读取本地配置");
+    // 根据开关回填表单
+    function fillFormBySwitch(){
+        const useGlobal = getPageUseGlobal();
+        useGlobalCfgCb.checked = useGlobal;
+        let cfg;
+        if(useGlobal){
+            cfg = getGiteeGlobalConfig();
         }else{
-            config.repo = DEFAULT_REPO;
-            repoInput.value = DEFAULT_REPO;
-            log("ℹ️请填入token后保存配置");
+            cfg = getPageLocalConfig(PAGE_LOCAL_KEY);
         }
-    }
-    function saveConfigLocal(){
-        config.token = tokenInput.value.trim();
-        config.repo = repoInput.value.trim();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-        log("✅配置已保存");
+        repoInput.value = cfg.repo;
+        tokenInput.value = cfg.token;
     }
 
-    async function fetchSongList(){
-        if(!config.token || !config.repo){
-            log("⚠️请填写Token和仓库，点击保存配置");
-            return [];
-        }
-        log("读取歌单 songlist.md");
-        try{
-            const url = `https://gitee.com/api/v5/repos/${config.repo}/contents/songlist.md?access_token=${config.token}`;
-            const resp = await fetch(url);
-            if(resp.status === 404){
-                log("歌单文件不存在，新增歌曲会自动创建");
-                fileSha = null;
-                return [];
-            }
-            if(!resp.ok){
-                log(`读取错误:${resp.status}`);
-                return [];
-            }
-            const json = await resp.json();
-            fileSha = json.sha;
-            if(!json.content){
-                log("⚠️文件内容为空，返回空歌单");
-                return [];
-            }
-            const mdText = fromBase64(json.content);
-            return parseSongMd(mdText);
-        }catch(e){
-            log("读取异常："+e.message);
-            return [];
+    // 获取当前页面生效的配置对象
+    function getCurrentCfg(){
+        if(getPageUseGlobal()){
+            return getGiteeGlobalConfig();
+        }else{
+            return getPageLocalConfig(PAGE_LOCAL_KEY);
         }
     }
 
-    //解析markdown歌单格式 - 格式：- 歌名 | 歌手 | 备注
-    function parseSongMd(md){
-        const list = [];
-        const lines = md.split("\n");
-        for(let line of lines){
-            const match = line.match(/^-\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.*)$/);
-            if(match){
-                list.push({
-                    name:match[1].trim(),
-                    singer:match[2].trim(),
-                    remark:match[3].trim()
-                })
-            }
-        }
-        return list;
-    }
-
-    function buildSongMd(list){
-        return list.map(s=>`- ${s.name} | ${s.singer} | ${s.remark}`).join("\n");
-    }
-
-    async function saveSongToGitee(list){
-        if(!config.token || !config.repo) return false;
-        await fetchSongList();
-        const contentMd = buildSongMd(list);
-        const payload = {
-            access_token: config.token,
-            message:"更新歌单",
-            content: toBase64(contentMd)
+    // 保存当前表单配置（根据开关决定存全局/页面私有）
+    function saveCurrentCfgFromInput(){
+        const cfg = {
+            repo: repoInput.value.trim(),
+            token: tokenInput.value.trim(),
+            branch:"main"
         };
-
-        let method;
-        if(fileSha){
-            payload.sha = fileSha;
-            method = "PUT";
+        if(getPageUseGlobal()){
+            saveGiteeGlobalConfig(cfg);
         }else{
-            method = "POST";
+            savePageLocalConfig(PAGE_LOCAL_KEY, cfg);
         }
+    }
 
-        const resp = await fetch(`https://gitee.com/api/v5/repos/${config.repo}/contents/songlist.md`,{
-            method: method,
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify(payload)
-        });
-        const resJson = await resp.json();
-        if(!resp.ok){
-            log("保存失败："+JSON.stringify(resJson));
+    // 本地缓存读写
+    function saveLocalCache(){
+        localStorage.setItem(LOCAL_CACHE_KEY, JSON.stringify(songList));
+    }
+    function readLocalCache(){
+        const str = localStorage.getItem(LOCAL_CACHE_KEY);
+        if(str){
+            try{
+                return JSON.parse(str);
+            }catch(e){return [];}
+        }
+        return [];
+    }
+
+    // 渲染列表
+    function render(){
+        listWrap.innerHTML = "";
+        songList.forEach((item,idx)=>{
+            const div = document.createElement('div');
+            div.className = "song-item";
+            div.innerHTML = `
+            <div class="song-info">${item.name} — ${item.singer}</div>
+            <button class="del-btn" data-index="${idx}">删除</button>
+        `;
+            listWrap.appendChild(div);
+        })
+        document.querySelectorAll('.del-btn').forEach(btn=>{
+            btn.onclick = async (e)=>{
+                const index = Number(e.target.dataset.index);
+                setButtonsDisabled([addBtn, loadBtn], true);
+                songList.splice(index,1);
+                saveLocalCache();
+                await saveRemote();
+                render();
+                setButtonsDisabled([addBtn, loadBtn], false);
+            }
+        })
+    }
+
+    // 读取远程歌单
+    async function fetchRemote(){
+        const cfg = getCurrentCfg();
+        const ret = await giteeGetFile(cfg, "songlist.md", logBox);
+        if(!ret.ok){
             return false;
         }
-        fileSha = resJson.content.sha;
-        log("✅歌单保存成功");
+        if(ret.sha === null){
+            appendLog(logBox, "远程文件不存在");
+            fileSha = null;
+            songList = [];
+            saveLocalCache();
+            render();
+            return true;
+        }
+        fileSha = ret.sha;
+        if(!ret.content){
+            appendLog(logBox, "文件内容为空");
+            songList = [];
+            saveLocalCache();
+            render();
+            return true;
+        }
+        const b64 = ret.content.replace(/\s/g,"");
+        const md = decodeURIComponent(escape(atob(b64)));
+        const lines = md.split("\n");
+        songList = [];
+        for(const line of lines){
+            const m = line.match(/^-\s*(.+?)\s*\|\s*(.+)$/);
+            if(m){
+                songList.push({name:m[1].trim(), singer:m[2].trim()})
+            }
+        }
+        saveLocalCache();
+        render();
+        appendLog(logBox, "✅远程歌单加载完成");
         return true;
     }
 
-    function render(list){
-        songListBox.innerHTML = "";
-        list.forEach((item,idx)=>{
-            const div = document.createElement("div");
-            div.className = "song-item";
-            div.innerHTML = `
-            <div class="info">
-                <div class="song-title">${escapeHtml(item.name)}</div>
-                <div class="song-singer">🎤 ${escapeHtml(item.singer)}</div>
-                ${item.remark ? `<div class="song-remark">💬 ${escapeHtml(item.remark)}</div>`:""}
-            </div>
-            <span class="del" data-idx="${idx}">删除</span>
-        `;
-            songListBox.appendChild(div);
-        })
-    }
-    function escapeHtml(str){
-        return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    // 保存远程歌单
+    async function saveRemote(){
+        const cfg = getCurrentCfg();
+        let mdText = "";
+        for(const s of songList){
+            mdText += `- ${s.name} | ${s.singer}\n`;
+        }
+        const b64 = btoa(unescape(encodeURIComponent(mdText)));
+        // 先同步拿到最新sha
+        await fetchRemote();
+        const ret = await giteeSaveFile(cfg, "songlist.md", b64, fileSha, "update songlist", logBox);
+        if(ret.ok){
+            fileSha = ret.newSha;
+            appendLog(logBox, "✅歌单已同步Gitee");
+        }
+        return ret.ok;
     }
 
-    saveConfigBtn.onclick = async ()=>{
-        saveConfigLocal();
-        const data = await fetchSongList();
-        render(data);
-    };
+    window.onload = ()=>{
+        fillFormBySwitch();
+        songList = readLocalCache();
+        render();
+    }
 
-    addSongBtn.onclick = async ()=>{
-        const name = songNameEl.value.trim();
-        const singer = singerEl.value.trim();
-        const remark = songRemarkEl.value.trim();
+    // 复选框切换开关
+    useGlobalCfgCb.onchange = ()=>{
+        savePageUseGlobal(useGlobalCfgCb.checked);
+        fillFormBySwitch();
+    }
+
+    // 加载按钮
+    loadBtn.onclick = async ()=>{
+        saveCurrentCfgFromInput();
+        setButtonsDisabled([loadBtn, addBtn], true);
+        await fetchRemote();
+        setButtonsDisabled([loadBtn, addBtn], false);
+    }
+
+    // 添加按钮
+    addBtn.onclick = async ()=>{
+        const name = songNameInput.value.trim();
+        const singer = singerNameInput.value.trim();
         if(!name || !singer){
-            alert("请填写歌曲和歌手");
+            appendLog(logBox, "歌曲名和歌手不能为空");
             return;
         }
-        const list = await fetchSongList();
-        list.push({name,singer,remark});
-        const ok = await saveSongToGitee(list);
-        if(ok){
-            render(list);
-            songNameEl.value = "";
-            singerEl.value = "";
-            songRemarkEl.value = "";
-        }
-    }
+        saveCurrentCfgFromInput();
+        setButtonsDisabled([addBtn, loadBtn], true);
 
-    songListBox.onclick = async e=>{
-        const idx = e.target.dataset.idx;
-        if(idx === undefined) return;
-        const list = await fetchSongList();
-        list.splice(Number(idx),1);
-        const ok = await saveSongToGitee(list);
-        if(ok) render(list);
-    }
+        songList.push({name,singer});
+        saveLocalCache();
+        render();
+        songNameInput.value = "";
+        singerNameInput.value = "";
 
-    //页面加载
-    loadConfig();
+        await saveRemote();
+        setButtonsDisabled([addBtn, loadBtn], false);
+    }
 </script>
 </body>
 </html>

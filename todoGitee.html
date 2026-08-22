@@ -39,6 +39,9 @@
             border:1px solid #d1d5db;
             border-radius:8px;
         }
+        .checkbox-row{
+            margin-bottom:10px;
+        }
         .input-area {
             display:flex;
             gap:10px;
@@ -58,6 +61,10 @@
             border:none;
             border-radius:10px;
             cursor:pointer;
+        }
+        button:disabled{
+            background:#94a3b8;
+            cursor:not-allowed;
         }
         .todo-item {
             background:#fff;
@@ -112,10 +119,18 @@
     <div class="tip">数据读写Gitee仓库todo.md，必须线上Pages域名访问</div>
 
     <div class="config-area">
+        <div class="checkbox-row">
+            <label>
+                <input type="checkbox" id="useGlobalCfg" checked>
+                使用全局Gitee配置（取消为本页独立仓库/token）
+            </label>
+        </div>
         <div>Gitee Token：</div>
         <input id="tokenInput" placeholder="gitee私人token">
         <div>仓库(用户名/仓库名)：</div>
         <input id="repoInput" placeholder="例如 abc/100‑days2026">
+        <div>分支：</div>
+        <input id="branchInput" placeholder="main" value="main">
         <button id="saveConfig">保存配置并加载待办</button>
     </div>
 
@@ -131,85 +146,70 @@
     </div>
 </div>
 
+<script src="./giteeApiUtils.js"></script>
 <script>
-    const STORAGE_KEY = "gitee_todo_config";
-    const DEFAULT_REPO = "lishijie-me/100-days2026"; // 修改这里为你的仓库
+    const PAGE_LOCAL_KEY = "todo_local_config";
+    const PAGE_USE_GLOBAL_KEY = "todo_use_global";
+    const REMOTE_FILE = "todo.md";
+
     const todoInput = document.getElementById("todoInput");
     const addBtn = document.getElementById("addBtn");
     const todoList = document.getElementById("todoList");
     const tokenInput = document.getElementById("tokenInput");
     const repoInput = document.getElementById("repoInput");
+    const branchInput = document.getElementById("branchInput");
     const saveConfigBtn = document.getElementById("saveConfig");
     const logBox = document.getElementById("logBox");
+    const useGlobalCfgCb = document.getElementById("useGlobalCfg");
 
-    let config = {token:"", repo:""};
     let fileSha = null;
 
-    function log(msg){
-        logBox.innerText += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
-        logBox.scrollTop = logBox.scrollHeight;
+    // ----页面开关存储逻辑----
+    function getPageUseGlobal(){
+        const s = localStorage.getItem(PAGE_USE_GLOBAL_KEY);
+        return s === null ? true : (s === "true");
+    }
+    function savePageUseGlobal(flag){
+        localStorage.setItem(PAGE_USE_GLOBAL_KEY, String(flag));
     }
 
-    // UTF‑8 Base64编解码
-    function toBase64(str){
-        return btoa(unescape(encodeURIComponent(str)));
-    }
-    function fromBase64(b64){
-        return decodeURIComponent(escape(atob(b64)));
-    }
-
-    function loadConfig(){
-        const str = localStorage.getItem(STORAGE_KEY);
-        if(str){
-            config = JSON.parse(str);
-            tokenInput.value = config.token;
-            repoInput.value = config.repo;
-            log("✅ 已加载本地配置");
+    function fillFormBySwitch(){
+        const useGlobal = getPageUseGlobal();
+        useGlobalCfgCb.checked = useGlobal;
+        let cfg;
+        if(useGlobal){
+            cfg = getGiteeGlobalConfig();
         }else{
-            repoInput.value = DEFAULT_REPO;
-            config.repo = DEFAULT_REPO;
-            log("ℹ️ 使用默认仓库配置");
+            cfg = getPageLocalConfig(PAGE_LOCAL_KEY);
         }
-    }
-    function saveConfigLocal(){
-        config.token = tokenInput.value.trim();
-        config.repo = repoInput.value.trim();
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
-        log("✅ 配置已保存");
+        repoInput.value = cfg.repo || "";
+        tokenInput.value = cfg.token || "";
+        branchInput.value = cfg.branch || "main";
     }
 
-    //读取文件，强制刷新sha
-    async function fetchTodoMd(){
-        if(!config.token || !config.repo){
-            alert("请填写token信息");
-            return;
-        }
-        log("🔍 请求读取todo.md");
-        try{
-            const url = `https://gitee.com/api/v5/repos/${config.repo}/contents/todo.md?access_token=${config.token}`;
-            const resp = await fetch(url);
-            if(resp.status === 404){
-                log("ℹ️ todo.md不存在");
-                fileSha = null;
-                renderTodo([]);
-                return;
-            }
-            if(!resp.ok){
-                const errJson = await resp.json();
-                log(`❌读取失败 HTTP${resp.status}：${JSON.stringify(errJson)}`);
-                return;
-            }
-            const json = await resp.json();
-            fileSha = json.sha;
-            log(`✅读取成功，sha=${fileSha}`);
-            const raw = fromBase64(json.content);
-            const list = parseMarkdownTodo(raw);
-            renderTodo(list);
-        }catch(e){
-            log(`❌网络异常：${e.message}`);
+    function getCurrentCfg(){
+        if(getPageUseGlobal()){
+            return getGiteeGlobalConfig();
+        }else{
+            return getPageLocalConfig(PAGE_LOCAL_KEY);
         }
     }
 
+    function saveCurrentCfgFromInput(){
+        const cfg = {
+            repo: repoInput.value.trim(),
+            token: tokenInput.value.trim(),
+            branch: branchInput.value.trim() || "main"
+        };
+        if(getPageUseGlobal()){
+            saveGiteeGlobalConfig(cfg);
+        }else{
+            savePageLocalConfig(PAGE_LOCAL_KEY, cfg);
+        }
+        appendLog(logBox,"✅配置已保存");
+    }
+
+    //业务：解析markdown待办
     function parseMarkdownTodo(mdText){
         const lines = mdText.split("\n");
         const list = [];
@@ -229,32 +229,8 @@
         return list.map(item=>`- [${item.done?"x":" "}] ${item.content}`).join("\n");
     }
 
-    async function saveToGitee(list){
-        if(!config.token || !config.repo) return false;
-        //保存前重新拉取最新sha，解决sha过期问题
-        await fetchTodoMd();
-        const mdContent = buildMarkdown(list);
-        log(`📝准备提交内容:\n${mdContent}`);
-        const payload = {
-            access_token: config.token,
-            message: "更新待办",
-            content: toBase64(mdContent)
-        };
-        if(fileSha) payload.sha = fileSha;
-        log(`📤携带sha:${fileSha??"null"}`);
-        const resp = await fetch(`https://gitee.com/api/v5/repos/${config.repo}/contents/todo.md`,{
-            method:"PUT",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify(payload)
-        });
-        const resJson = await resp.json();
-        if(!resp.ok){
-            log(`❌保存失败:${JSON.stringify(resJson)}`);
-            return false;
-        }
-        fileSha = resJson.content.sha;
-        log(`🎉提交成功，新sha=${fileSha}`);
-        return true;
+    function escapeHtml(str){
+        return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
     }
 
     function renderTodo(list){
@@ -270,53 +246,94 @@
             todoList.appendChild(div);
         })
     }
-    function escapeHtml(str){
-        return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+    //读取远程todo.md
+    async function fetchTodoMd(){
+        const cfg = getCurrentCfg();
+        const ret = await giteeGetFile(cfg, REMOTE_FILE, logBox);
+        if(!ret.ok){
+            renderTodo([]);
+            return [];
+        }
+        fileSha = ret.sha;
+        if(ret.sha === null || !ret.content){
+            appendLog(logBox,"ℹ️todo.md不存在或为空");
+            renderTodo([]);
+            return [];
+        }
+        const rawMd = decodeURIComponent(escape(atob(ret.content.replace(/\s/g,""))));
+        const list = parseMarkdownTodo(rawMd);
+        renderTodo(list);
+        appendLog(logBox,"✅待办读取完成");
+        return list;
     }
 
-    saveConfigBtn.onclick = async ()=>{
-        saveConfigLocal();
+    //保存到远程
+    async function saveTodoList(list){
+        const cfg = getCurrentCfg();
+        //保存前刷新sha
         await fetchTodoMd();
+        const mdText = buildMarkdown(list);
+        const base64Str = btoa(unescape(encodeURIComponent(mdText)));
+        const ret = await giteeSaveFile(cfg, REMOTE_FILE, base64Str, fileSha, "更新待办", logBox);
+        if(ret.ok){
+            fileSha = ret.newSha;
+        }
+        return ret.ok;
     }
+
+    //事件
+    saveConfigBtn.onclick = async ()=>{
+        saveCurrentCfgFromInput();
+        setButtonsDisabled([saveConfigBtn,addBtn],true);
+        await fetchTodoMd();
+        setButtonsDisabled([saveConfigBtn,addBtn],false);
+    };
 
     addBtn.onclick = async ()=>{
         const val = todoInput.value.trim();
-        if(!val) return;
-        const list = await getCurrentList();
+        if(!val){
+            appendLog(logBox,"待办内容不能为空");
+            return;
+        }
+        setButtonsDisabled([saveConfigBtn,addBtn],true);
+        const list = await fetchTodoMd();
         list.push({done:false, content:val});
-        const ok = await saveToGitee(list);
+        const ok = await saveTodoList(list);
         if(ok){
             todoInput.value = "";
             renderTodo(list);
         }
-    }
+        setButtonsDisabled([saveConfigBtn,addBtn],false);
+    };
+
     todoInput.onkeydown = async e=>{
         if(e.key === "Enter") await addBtn.click();
-    }
-
-    async function getCurrentList(){
-        if(!config.token||!config.repo) return [];
-        const resp = await fetch(`https://gitee.com/api/v5/repos/${config.repo}/contents/todo.md?access_token=${config.token}`);
-        if(resp.status ===404) return [];
-        const json = await resp.json();
-        fileSha = json.sha;
-        return parseMarkdownTodo(fromBase64(json.content));
-    }
+    };
 
     todoList.onclick = async e=>{
         const idx = Number(e.target.dataset.index);
         if(isNaN(idx)) return;
-        const list = await getCurrentList();
+        setButtonsDisabled([saveConfigBtn,addBtn],true);
+        const list = await fetchTodoMd();
         if(e.target.type === "checkbox"){
             list[idx].done = e.target.checked;
         }else if(e.target.classList.contains("del")){
             list.splice(idx,1);
         }
-        const ok = await saveToGitee(list);
+        const ok = await saveTodoList(list);
         if(ok) renderTodo(list);
-    }
+        setButtonsDisabled([saveConfigBtn,addBtn],false);
+    };
 
-    loadConfig();
+    useGlobalCfgCb.onchange = ()=>{
+        savePageUseGlobal(useGlobalCfgCb.checked);
+        fillFormBySwitch();
+    };
+
+    window.onload = ()=>{
+        fillFormBySwitch();
+    };
 </script>
 </body>
 </html>

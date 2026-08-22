@@ -12,23 +12,19 @@
             padding: 0;
             font-family: system-ui, sans-serif;
         }
-
         body {
             max-width: 900px;
             margin: 20px auto;
             padding: 0 16px;
         }
-
         .item {
             margin: 12px 0;
         }
-
         label {
             display: block;
             margin-bottom: 4px;
             font-weight: 500;
         }
-
         input,
         textarea {
             width: 100%;
@@ -37,12 +33,10 @@
             border-radius: 6px;
             font-size: 14px;
         }
-
         textarea {
             min-height: 280px;
             white-space: pre-wrap;
         }
-
         button {
             padding: 10px 18px;
             background: #c7000b;
@@ -52,12 +46,10 @@
             cursor: pointer;
             font-size: 15px;
         }
-
         button:disabled {
             background: #aaa;
             cursor: not-allowed;
         }
-
         .result {
             margin-top: 16px;
             padding: 12px;
@@ -66,6 +58,14 @@
             white-space: pre-wrap;
             word-break: break-all;
         }
+        .back-wrap{
+            margin-top:30px;
+            text-align:center;
+        }
+        .back-home{
+            color:#2563eb;
+            text-decoration:none;
+        }
     </style>
 </head>
 
@@ -73,18 +73,19 @@
 <h2>Markdown手记上传到Gitee</h2>
 
 <div class="item">
-    <label>Gitee用户名</label>
-    <input id="username" placeholder="lishijie-me" />
+    <label>
+        <input type="checkbox" id="useGlobalCfg" checked>
+        使用全局Gitee配置（取消为本页独立仓库/token）
+    </label>
 </div>
 <div class="item">
-    <label>仓库名称</label>
-    <input id="repo" placeholder="100-days2026" />
+    <label>仓库(用户名/仓库名)</label>
+    <input id="repoFull" placeholder="lishijie-me/100‑days2026" />
 </div>
 <div class="item">
     <label>分支（一般main）</label>
-    <input id="branch" placeholder="main" />
+    <input id="branch" placeholder="main" value="main"/>
 </div>
-<!-- 删除静态value，全部交给JS getYmd()赋值 -->
 <div class="item">
     <label>文件路径（可修改）</label>
     <input id="filePath" placeholder="例如 20260822-手记.md" />
@@ -104,117 +105,108 @@
 
 <div class="result" id="result"></div>
 
-<script>
-    const uploadBtn = document.getElementById('uploadBtn');
-    const resultEl = document.getElementById('result');
+<div class="back-wrap">
+    <a class="back-home" href="./index.html">← 返回工具导航首页</a>
+</div>
 
-    // 获取 yyyyMMdd 格式日期
-    function getYmd() {
-        const d = new Date();
-        const y = d.getFullYear();
-        const m = String(d.getMonth() + 1).padStart(2, '0');
-        const day = String(d.getDate()).padStart(2, '0');
-        return `${y}${m}${day}`;
+<script src="./giteeApiUtils.js"></script>
+<script>
+    const PAGE_LOCAL_KEY = "note_upload_local_config";
+    const PAGE_USE_GLOBAL_KEY = "note_upload_use_global";
+
+    const useGlobalCfgCb = document.getElementById("useGlobalCfg");
+    const repoFullInput = document.getElementById("repoFull");
+    const branchInput = document.getElementById("branch");
+    const filePathInput = document.getElementById("filePath");
+    const tokenInput = document.getElementById("token");
+    const mdContentInput = document.getElementById("mdContent");
+    const uploadBtn = document.getElementById("uploadBtn");
+    const resultEl = document.getElementById("result");
+
+    function getPageUseGlobal(){
+        const s = localStorage.getItem(PAGE_USE_GLOBAL_KEY);
+        return s === null ? true : (s === "true");
+    }
+    function savePageUseGlobal(flag){
+        localStorage.setItem(PAGE_USE_GLOBAL_KEY, String(flag));
     }
 
-    // 页面加载：读取本地存储配置
-    window.onload = () => {
-        // localStorage为空时，才使用内置默认值
-        document.getElementById('username').value = localStorage.getItem('gitee_username') || 'lishijie-me';
-        document.getElementById('repo').value = localStorage.getItem('gitee_repo') || '100-days2026';
-        document.getElementById('branch').value = localStorage.getItem('gitee_branch') || 'main';
-        document.getElementById('filePath').value = `${getYmd()}-手记.md`;
+    function fillFormBySwitch(){
+        const useGlobal = getPageUseGlobal();
+        useGlobalCfgCb.checked = useGlobal;
+        let cfg;
+        if(useGlobal){
+            cfg = getGiteeGlobalConfig();
+        }else{
+            cfg = getPageLocalConfig(PAGE_LOCAL_KEY);
+        }
+        repoFullInput.value = cfg.repo || "";
+        tokenInput.value = cfg.token || "";
+        branchInput.value = cfg.branch || "main";
+    }
+
+    function getCurrentCfg(){
+        if(getPageUseGlobal()){
+            return getGiteeGlobalConfig();
+        }else{
+            return getPageLocalConfig(PAGE_LOCAL_KEY);
+        }
+    }
+
+    function saveCurrentCfgFromInput(){
+        const cfg = {
+            repo: repoFullInput.value.trim(),
+            token: tokenInput.value.trim(),
+            branch: branchInput.value.trim() || "main"
+        };
+        if(getPageUseGlobal()){
+            saveGiteeGlobalConfig(cfg);
+        }else{
+            savePageLocalConfig(PAGE_LOCAL_KEY, cfg);
+        }
+    }
+
+    // 日志封装，复用appendLog，直接输出到resultEl
+    function logMsg(msg){
+        appendLog(resultEl, msg);
+    }
+
+    window.onload = function(){
+        fillFormBySwitch();
     };
 
-    async function uploadNote() {
-        const username = document.getElementById('username').value.trim();
-        const repo = document.getElementById('repo').value.trim();
-        const branch = document.getElementById('branch').value.trim();
-        const token = document.getElementById('token').value.trim();
-        const content = document.getElementById('mdContent').value;
-        let filePath = document.getElementById('filePath').value.trim();
+    useGlobalCfgCb.onchange = function(){
+        savePageUseGlobal(useGlobalCfgCb.checked);
+        fillFormBySwitch();
+    };
 
-        if (!username || !repo || !branch || !token || !content) {
-            resultEl.innerText = "⚠️请填全所有信息，并且粘贴手记内容";
+    uploadBtn.onclick = async function(){
+        saveCurrentCfgFromInput();
+        const cfg = getCurrentCfg();
+        const filePath = filePathInput.value.trim();
+        const mdText = mdContentInput.value;
+        if(!filePath){
+            logMsg("❌请填写文件路径");
             return;
         }
-
-        // 增强：空白、空格、换行全部拦截，强制生成默认文件名
-        if (!filePath || filePath.length === 0) {
-            filePath = `${getYmd()}-手记.md`;
+        if(!mdText){
+            logMsg("❌手记内容不能为空");
+            return;
         }
-
-        uploadBtn.disabled = true;
-        resultEl.innerText = "正在上传……";
-
-        try {
-            const apiUrl = `https://gitee.com/api/v5/repos/${username}/${repo}/contents/${filePath}`;
-            const b64 = btoa(unescape(encodeURIComponent(content)));
-
-            // 尝试获取已有文件，拿到sha，用于覆盖
-            let sha = null;
-            try {
-                const getResp = await fetch(`${apiUrl}?access_token=${token}&ref=${branch}`);
-                if (getResp.ok) {
-                    const getJson = await getResp.json();
-                    sha = getJson.sha;
-                }
-            } catch (e) {
-                // 文件不存在，sha保持null
-            }
-
-            const payload = {
-                access_token: token,
-                branch: branch,
-                content: b64,
-                message: `add note: ${filePath}`
-            };
-            if (sha) {
-                payload.sha = sha;
-            }
-
-            const method = sha ? "PUT" : "POST";
-            const resp = await fetch(apiUrl, {
-                method: method,
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const resJson = await resp.json();
-            if (!resp.ok) {
-                resultEl.innerText = `上传失败\n${JSON.stringify(resJson, null, 2)}`;
-                return;
-            }
-
-            const htmlUrl = resJson.content?.html_url || "";
-            const rawUrl = resJson.content?.download_url || "";
-            const tip = sha ? "✅文件已覆盖更新！" : "✅新建文件成功！";
-
-            resultEl.innerText = `${tip}
-文件路径：${filePath}
-网页查看地址：
-${htmlUrl}
-Raw原始md地址：
-${rawUrl}
-`;
-
-        } catch (err) {
-            resultEl.innerText = "网络异常：" + String(err);
-        } finally {
-            uploadBtn.disabled = false;
+        setButtonsDisabled([uploadBtn], true);
+        // 读取旧sha
+        const getRet = await giteeGetFile(cfg, filePath, resultEl);
+        let sha = null;
+        if(getRet.ok && getRet.sha){
+            sha = getRet.sha;
         }
+        const base64 = btoa(unescape(encodeURIComponent(mdText)));
+        const saveRet = await giteeSaveFile(cfg, filePath, base64, sha, "upload note", resultEl);
+        if(saveRet.ok){
+            logMsg("✅上传完成");
+        }
+        setButtonsDisabled([uploadBtn], false);
     }
-
-    uploadBtn.addEventListener('click', async () => {
-        // 点击上传时保存配置到浏览器本地
-        localStorage.setItem('gitee_username', document.getElementById('username').value);
-        localStorage.setItem('gitee_repo', document.getElementById('repo').value);
-        localStorage.setItem('gitee_branch', document.getElementById('branch').value);
-        await uploadNote();
-    })
 </script>
 </body>
-
 </html>

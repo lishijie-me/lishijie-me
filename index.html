@@ -1,64 +1,95 @@
 <!DOCTYPE html>
-<html lang="zh‑CN">
-
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF‑8">
-    <meta name="viewport" content="width=device‑width, initial‑scale=1.0">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>我的个人工具集</title>
     <style>
         * {
             margin: 0;
             padding: 0;
-            box-sizing: border‑box;
-            font‑family: system‑ui, sans‑serif;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
         }
 
         body {
-            background: #f5f7fa;
-            max‑width: 600px;
-            margin: 60px auto;
-            padding: 0 20px;
+            background: linear-gradient(135deg, #e8edf7 0%, #f5f7fa 100%);
+            min-height: 100vh;
+            padding: 60px 20px;
+        }
+
+        .container {
+            max-width: 640px;
+            margin: 0 auto;
         }
 
         h1 {
-            text‑align: center;
-            margin‑bottom: 40px;
-            color: #222;
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 48px;
+            font-size: 28px;
+            font-weight: 600;
         }
 
-        .tool‑item {
-            margin‑bottom: 16px;
+        .tool-card {
+            background: #ffffff;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.25s ease;
         }
 
-        .tool‑item a {
+        .tool-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.15);
+        }
+
+        .tool-card a {
             display: block;
-            padding: 16px 20px;
-            background: #2563eb;
-            color: #fff;
-            text‑decoration: none;
-            border‑radius: 8px;
-            font‑size: 16px;
+            padding: 22px 24px;
+            text-decoration: none;
+            color: #1f2937;
+            font-size: 17px;
         }
 
-        .tool‑item a:hover {
-            background: #1d4ed8;
+        .tool-card .desc {
+            font-size: 13px;
+            color: #6b7280;
+            margin-top: 6px;
         }
+
+        /* 新增工具直接复制下面这一块 */
+        /*
+        <div class="tool-card">
+            <a href="./xxx.html">
+                🚀 工具名称
+                <div class="desc">工具简单描述</div>
+            </a>
+        </div>
+        */
     </style>
 </head>
-
 <body>
-    <h1>我的工具集</h1>
+<div class="container">
+    <h1>🧰 我的个人工具集</h1>
 
-    <div class="tool‑item">
-        <a href="./note‑upload.html">📝 手记上传工具</a>
+    <div class="tool-card">
+        <a href="./note-upload.html">
+            📝 手记上传工具
+            <div class="desc">快速写Markdown手记，直接提交到Gitee仓库，支持同名覆盖</div>
+        </a>
     </div>
 
-    <!--以后新增工具就复制上面这一块，改文字和href即可
-<div class="tool‑item">
-    <a href="./xxx.html">🔧 另一个助手工具</a>
+    <!-- 后续新增工具就复制 tool‑card 模块 -->
+    <!--
+    <div class="tool-card">
+        <a href="./demo.html">
+            🔧 待新增小助手
+            <div class="desc">这里写工具简介</div>
+        </a>
+    </div>
+    -->
+
 </div>
--->
-
 </body>
-
 </html>

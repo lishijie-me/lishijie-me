@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>随手歌单</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg,#e8edf7 0%,#f5f7fa 100%);
+            min-height:100vh;
+            padding:40px 20px;
+        }
+        .wrap {
+            max-width:600px;
+            margin:0 auto;
+        }
+        h1 {
+            text-align:center;
+            margin-bottom:8px;
+            color:#1f2937;
+            font-size:26px;
+        }
+        .tip{
+            text-align:center;
+            color:#6b7280;
+            font-size:13px;
+            margin-bottom:24px;
+        }
+        .config-area{
+            background:#fff;
+            padding:16px;
+            border-radius:12px;
+            margin-bottom:20px;
+        }
+        .config-area input{
+            width:100%;
+            padding:10px;
+            margin:6px 0;
+            border:1px solid #d1d5db;
+            border-radius:8px;
+        }
+        #saveConfig{
+            width:100%;
+            padding:10px;
+            background:#2563eb;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+        }
+        .input-wrap{
+            background:#fff;
+            padding:16px;
+            border-radius:12px;
+            margin-bottom:20px;
+        }
+        .row{
+            display:flex;
+            gap:10px;
+            margin-bottom:10px;
+        }
+        input{
+            padding:11px 14px;
+            border:1px solid #d1d5db;
+            border-radius:8px;
+            font-size:15px;
+        }
+        #songName{
+            flex:1.2;
+        }
+        #singer{
+            flex:1;
+        }
+        #songRemark{
+            width:100%;
+        }
+        #addSongBtn{
+            width:100%;
+            padding:12px;
+            background:#2563eb;
+            color:#fff;
+            border:none;
+            border-radius:8px;
+            cursor:pointer;
+            font-size:15px;
+        }
+        .song-item{
+            background:#fff;
+            padding:16px 18px;
+            border-radius:12px;
+            margin-bottom:12px;
+            box-shadow:0 2px 8px rgba(0,0,0,0.06);
+            display:flex;
+            align-items:center;
+            gap:12px;
+        }
+        .info{
+            flex:1;
+        }
+        .song-title{
+            font-size:16px;
+            color:#1f2937;
+        }
+        .song-singer{
+            font-size:13px;
+            color:#6b7280;
+        }
+        .song-remark{
+            font-size:13px;
+            color:#4b5563;
+            margin-top:4px;
+        }
+        .del{
+            color:#ef4444;
+            cursor:pointer;
+            font-size:14px;
+        }
+        .back-home{
+            margin-top:40px;
+            text-align:center;
+        }
+        .back-home a{
+            color:#2563eb;
+            text-decoration:none;
+        }
+        .log{
+            background:#eee;
+            padding:10px;
+            font-size:12px;
+            margin:12px 0;
+            border-radius:8px;
+            white-space:pre-wrap;
+            max-height:160px;
+            overflow:auto;
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h1>🎵 随手歌单</h1>
+    <div class="tip">数据保存到Gitee songlist.md，多设备查看</div>
+
+    <div class="config-area">
+        <div>Gitee Token：</div>
+        <input id="tokenInput" placeholder="gitee私人token">
+        <div>仓库(用户名/仓库名)：</div>
+        <input id="repoInput" placeholder="例如 abc/100‑days2026">
+        <button id="saveConfig">保存配置并加载歌单</button>
+    </div>
+
+    <div class="input-wrap">
+        <div class="row">
+            <input id="songName" placeholder="歌曲名称">
+            <input id="singer" placeholder="歌手">
+        </div>
+        <input id="songRemark" placeholder="备注（心情/场景，选填）">
+        <br>
+        <button id="addSongBtn">添加到歌单</button>
+    </div>
+
+    <div id="songListBox"></div>
+    <div id="logBox" class="log"></div>
+
+    <div class="back-home">
+        <a href="./index.html">← 返回工具导航首页</a>
+    </div>
+</div>
+
+<script>
+    const STORAGE_KEY = "gitee_todo_config";
+    // 修改为你的仓库
+    const DEFAULT_REPO = "你的用户名/100‑days2026";
+
+    const tokenInput = document.getElementById("tokenInput");
+    const repoInput = document.getElementById("repoInput");
+    const saveConfigBtn = document.getElementById("saveConfig");
+    const songNameEl = document.getElementById("songName");
+    const singerEl = document.getElementById("singer");
+    const songRemarkEl = document.getElementById("songRemark");
+    const addSongBtn = document.getElementById("addSongBtn");
+    const songListBox = document.getElementById("songListBox");
+    const logBox = document.getElementById("logBox");
+
+    let config = {token:"", repo:""};
+    let fileSha = null;
+
+    function log(msg){
+        logBox.innerText += `[${new Date().toLocaleTimeString()}] ${msg}\n`;
+        logBox.scrollTop = logBox.scrollHeight;
+    }
+
+    function toBase64(str){
+        return btoa(unescape(encodeURIComponent(str)));
+    }
+
+    // 增加空值保护 + 清除base64换行空白
+    function fromBase64(b64){
+        if(!b64) return "";
+        b64 = b64.replace(/\s/g, "");
+        return decodeURIComponent(escape(atob(b64)));
+    }
+
+    //读取本地存储
+    function loadConfig(){
+        const str = localStorage.getItem(STORAGE_KEY);
+        if(str){
+            config = JSON.parse(str);
+            tokenInput.value = config.token;
+            repoInput.value = config.repo;
+            log("✅已读取本地配置");
+        }else{
+            config.repo = DEFAULT_REPO;
+            repoInput.value = DEFAULT_REPO;
+            log("ℹ️请填入token后保存配置");
+        }
+    }
+    function saveConfigLocal(){
+        config.token = tokenInput.value.trim();
+        config.repo = repoInput.value.trim();
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(config));
+        log("✅配置已保存");
+    }
+
+    async function fetchSongList(){
+        if(!config.token || !config.repo){
+            log("⚠️请填写Token和仓库，点击保存配置");
+            return [];
+        }
+        log("读取歌单 songlist.md");
+        try{
+            const url = `https://gitee.com/api/v5/repos/${config.repo}/contents/songlist.md?access_token=${config.token}`;
+            const resp = await fetch(url);
+            if(resp.status === 404){
+                log("歌单文件不存在，新增歌曲会自动创建");
+                fileSha = null;
+                return [];
+            }
+            if(!resp.ok){
+                log(`读取错误:${resp.status}`);
+                return [];
+            }
+            const json = await resp.json();
+            fileSha = json.sha;
+            if(!json.content){
+                log("⚠️文件内容为空，返回空歌单");
+                return [];
+            }
+            const mdText = fromBase64(json.content);
+            return parseSongMd(mdText);
+        }catch(e){
+            log("读取异常："+e.message);
+            return [];
+        }
+    }
+
+    //解析markdown歌单格式 - 格式：- 歌名 | 歌手 | 备注
+    function parseSongMd(md){
+        const list = [];
+        const lines = md.split("\n");
+        for(let line of lines){
+            const match = line.match(/^-\s*(.+?)\s*\|\s*(.+?)\s*\|\s*(.*)$/);
+            if(match){
+                list.push({
+                    name:match[1].trim(),
+                    singer:match[2].trim(),
+                    remark:match[3].trim()
+                })
+            }
+        }
+        return list;
+    }
+
+    function buildSongMd(list){
+        return list.map(s=>`- ${s.name} | ${s.singer} | ${s.remark}`).join("\n");
+    }
+
+    async function saveSongToGitee(list){
+        if(!config.token || !config.repo) return false;
+        await fetchSongList();
+        const contentMd = buildSongMd(list);
+        const payload = {
+            access_token: config.token,
+            message:"更新歌单",
+            content: toBase64(contentMd)
+        };
+
+        let method;
+        if(fileSha){
+            payload.sha = fileSha;
+            method = "PUT";
+        }else{
+            method = "POST";
+        }
+
+        const resp = await fetch(`https://gitee.com/api/v5/repos/${config.repo}/contents/songlist.md`,{
+            method: method,
+            headers:{"Content-Type":"application/json"},
+            body:JSON.stringify(payload)
+        });
+        const resJson = await resp.json();
+        if(!resp.ok){
+            log("保存失败："+JSON.stringify(resJson));
+            return false;
+        }
+        fileSha = resJson.content.sha;
+        log("✅歌单保存成功");
+        return true;
+    }
+
+    function render(list){
+        songListBox.innerHTML = "";
+        list.forEach((item,idx)=>{
+            const div = document.createElement("div");
+            div.className = "song-item";
+            div.innerHTML = `
+            <div class="info">
+                <div class="song-title">${escapeHtml(item.name)}</div>
+                <div class="song-singer">🎤 ${escapeHtml(item.singer)}</div>
+                ${item.remark ? `<div class="song-remark">💬 ${escapeHtml(item.remark)}</div>`:""}
+            </div>
+            <span class="del" data-idx="${idx}">删除</span>
+        `;
+            songListBox.appendChild(div);
+        })
+    }
+    function escapeHtml(str){
+        return str.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    }
+
+    saveConfigBtn.onclick = async ()=>{
+        saveConfigLocal();
+        const data = await fetchSongList();
+        render(data);
+    };
+
+    addSongBtn.onclick = async ()=>{
+        const name = songNameEl.value.trim();
+        const singer = singerEl.value.trim();
+        const remark = songRemarkEl.value.trim();
+        if(!name || !singer){
+            alert("请填写歌曲和歌手");
+            return;
+        }
+        const list = await fetchSongList();
+        list.push({name,singer,remark});
+        const ok = await saveSongToGitee(list);
+        if(ok){
+            render(list);
+            songNameEl.value = "";
+            singerEl.value = "";
+            songRemarkEl.value = "";
+        }
+    }
+
+    songListBox.onclick = async e=>{
+        const idx = e.target.dataset.idx;
+        if(idx === undefined) return;
+        const list = await fetchSongList();
+        list.splice(Number(idx),1);
+        const ok = await saveSongToGitee(list);
+        if(ok) render(list);
+    }
+
+    //页面加载
+    loadConfig();
+</script>
+</body>
+</html>

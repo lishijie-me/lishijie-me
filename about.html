@@ -10,7 +10,34 @@
         .wrap{max-width:640px;margin:0 auto;background:#fff;padding:32px;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
         h1{text-align:center;color:#1f2937;margin-bottom:24px;font-size:26px;}
         section{margin-bottom:24px;}
-        h2{font-size:17px;color:#2563eb;margin-bottom:10px;border-left:4px solid #2563eb;padding-left:10px;}
+
+        /* 折叠标题样式 */
+        .collapse-header{
+            display:flex;
+            align-items:center;
+            gap:6px;
+            cursor:pointer;
+            font-size:17px;
+            color:#2563eb;
+            margin-bottom:10px;
+            border-left:4px solid #2563eb;
+            padding-left:10px;
+            user-select:none;
+        }
+        .collapse-icon{
+            transition: transform 0.2s ease;
+        }
+        .collapse-wrap{
+            overflow:hidden;
+            transition: max-height 0.35s ease;
+        }
+        .collapse-closed .collapse-icon{
+            transform: rotate(-90deg);
+        }
+        .collapse-closed .collapse-wrap{
+            max-height:0 !important;
+        }
+
         p{color:#374151;line-height:1.7;font-size:15px;}
         ul{padding-left:20px;margin-top:8px;}
         li{line-height:1.8;color:#374151;font-size:15px;}
@@ -73,34 +100,44 @@
         </ul>
     </section>
 
-    <!-- ==========新增文章手记板块========== -->
-    <section>
-        <h2>📑 我的手记文章</h2>
-        <div class="article-item">
-            <a href="shturl.cc/8BQdlutE你的用户名/100-days2026/blob/main/article1.md" target="_blank">第一篇手记示例</a>
-            <div class="article-desc">简单描述这篇文章写了什么内容</div>
+    <!-- ==========我的手记文章 - 默认折叠========== -->
+    <section class="collapse-container collapse-closed">
+        <div class="collapse-header">
+            <span class="collapse-icon">▼</span>
+            <span>📑 我的手记文章（点击展开）</span>
         </div>
-        <div class="article-item">
-            <a href="shturl.cc/8BQdlutE你的用户名/100-days2026/blob/main/article2.md" target="_blank">第二篇手记示例</a>
-            <div class="article-desc">记录学习总结、复盘、思考</div>
+        <div class="collapse-wrap">
+            <div class="article-item">
+                <a href="https://gitee.com/lishijie-me/lishijie-me/blob/main/%E6%AD%8C%E5%8D%95.md" target="_blank">我的歌单</a>
+                <div class="article-desc">我喜欢的歌单</div>
+            </div>
+            <div class="article-item">
+                <a href="shturl.cc/8BQdlutE你的用户名/100-days2026/blob/main/article2.md" target="_blank">第二篇手记示例</a>
+                <div class="article-desc">记录学习总结、复盘、思考</div>
+            </div>
+            <!--新增文章复制这个块即可
+            <div class="article-item">
+                <a href="文章完整地址" target="_blank">文章标题</a>
+                <div class="article-desc">简短描述</div>
+            </div>
+            -->
         </div>
-        <!--新增文章复制这个块即可
-        <div class="article-item">
-            <a href="文章完整地址" target="_blank">文章标题</a>
-            <div class="article-desc">简短描述</div>
-        </div>
-        -->
     </section>
 
-    <!-- 项目与个人阅历 -->
-    <section>
-        <h2>📂 项目与实践</h2>
-        <ul>
-            <li>个人工具集：一套基于Gitee存储的网页小工具，包含待办、歌单、手记等，前后端全部自研，浏览器直接运行。</li>
-            <li>业务系统开发：负责接口开发、数据库设计、中间件调优、线上问题排查，具备完整服务端实战经验。</li>
-            <li>全栈实践：从后端服务、中间件组件到前端页面独立实现，兼顾功能、交互与细节体验。</li>
-            <li>自我实践：保持持续输入输出，技术复盘、生活记录、健身乐器同步推进，在工作与生活之间寻找平衡。</li>
-        </ul>
+    <!-- 项目与实践 - 默认折叠 -->
+    <section class="collapse-container collapse-closed">
+        <div class="collapse-header">
+            <span class="collapse-icon">▼</span>
+            <span>📂 项目与实践（点击展开）</span>
+        </div>
+        <div class="collapse-wrap">
+            <ul>
+                <li>个人工具集：一套基于Gitee存储的网页小工具，包含待办、歌单、手记等，前后端全部自研，浏览器直接运行。</li>
+                <li>业务系统开发：负责接口开发、数据库设计、中间件调优、线上问题排查，具备完整服务端实战经验。</li>
+                <li>全栈实践：从后端服务、中间件组件到前端页面独立实现，兼顾功能、交互与细节体验。</li>
+                <li>自我实践：保持持续输入输出，技术复盘、生活记录、健身乐器同步推进，在工作与生活之间寻找平衡。</li>
+            </ul>
+        </div>
     </section>
 
     <div class="back">
@@ -111,5 +148,17 @@
             Fake it util you make it. </p>
     </div>
 </div>
+
+<script>
+    //折叠点击逻辑
+    document.querySelectorAll('.collapse-container').forEach(cnt=>{
+        const header = cnt.querySelector('.collapse-header');
+        header.onclick = ()=>{
+            cnt.classList.toggle('collapse-closed');
+            const icon = cnt.querySelector('.collapse-icon');
+            icon.textContent = cnt.classList.contains('collapse-closed') ? '▶' : '▼';
+        }
+    })
+</script>
 </body>
 </html>

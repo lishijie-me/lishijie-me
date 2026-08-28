@@ -146,37 +146,17 @@
         } else {
             pageConfigWrap.style.display = 'block';
             // 展开独立配置时预填充全局配置作为默认值
-            const tempGlobalCfg = getGiteeConfig(true, {});
-            repoInput.value = tempGlobalCfg.repo;
-            branchInput.value = tempGlobalCfg.branch;
-            tokenInput.value = tempGlobalCfg.token;
+            const tempGlobalCfg = getGiteeConfig(true);
+            repoInput.value = tempGlobalCfg.repo ?? "";
+            tokenInput.value = tempGlobalCfg.token ?? "";
         }
     });
 
     submitBtn.addEventListener('click', async () => {
         const useGlobal = useGlobalCheck.checked;
-        const pageCfg = {
-            repo: repoInput.value.trim(),
-            branch: branchInput.value.trim(),
-            token: tokenInput.value.trim()
-        };
-        const cfg = getGiteeConfig(useGlobal, pageCfg);
-
-        // 校验配置
-        if (useGlobal) {
-            if (!cfg.repo || !cfg.branch || !cfg.token) {
-                alert("⚠️ 使用全局配置，但配置为空，请前往【全局设置】页面填写！");
-                return;
-            }
-        } else {
-            if (!cfg.repo || !cfg.branch || !cfg.token) {
-                alert("⚠️ 当前页面独立配置：仓库、分支、token不能为空！");
-                return;
-            }
-        }
-
         const filePath = filePathInput.value.trim();
-        const content = mdContentInput.value;
+        const content = mdContentInput.value.trim();
+
         if (!filePath) {
             alert("请填写文件路径，例如 20260822‑手记.md");
             return;
@@ -189,8 +169,23 @@
         submitBtn.disabled = true;
         submitBtn.innerText = "上传中……";
         try {
-            // 调用giteeApi.js内提供的写入文件方法
-            const result = await uploadFileToGitee(cfg.repo, cfg.branch, filePath, content, cfg.token);
+            if(useGlobal){
+                // 使用全局配置，直接调用
+                await uploadFileToGitee(true, filePath, content, "更新手记");
+            }else{
+                // 页面独立配置：表单输入，不调用getGiteeConfig，手动组装
+                const token = tokenInput.value.trim();
+                const ownerRepo = repoInput.value.trim();
+                if(!token || !ownerRepo){
+                    throw new Error("令牌/仓库不能为空");
+                }
+                // 注意：当前giteeApi.js的uploadFileToGitee只读取localStorage，不支持外部传入token/repo！
+                // 临时方案：把页面表单值临时写入page_ localStorage，再调用接口
+                localStorage.setItem("page_gitee_token", token);
+                localStorage.setItem("page_gitee_owner", ownerRepo.split("/")[0]);
+                localStorage.setItem("page_gitee_repo", ownerRepo.split("/")[1]);
+                await uploadFileToGitee(false, filePath, content, "更新手记");
+            }
             alert("✅ 提交成功！");
         } catch (err) {
             console.error(err);
@@ -201,5 +196,6 @@
         }
     });
 </script>
+
 </body>
 </html>

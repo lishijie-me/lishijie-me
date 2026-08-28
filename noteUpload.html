@@ -1,212 +1,205 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>手记上传工具</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown手记上传</title>
     <style>
         * {
-            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: system-ui, sans-serif;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
         }
         body {
-            max-width: 900px;
-            margin: 20px auto;
-            padding: 0 16px;
+            background: #f5f7fa;
+            padding: 24px 16px;
+            min-height: 100vh;
         }
-        .item {
-            margin: 12px 0;
+        .wrap {
+            max-width: 640px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
         }
-        label {
+        h1 {
+            text-align: center;
+            color: #1f2937;
+            margin-bottom: 24px;
+            font-size: 24px;
+        }
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #2563eb;
+            text-decoration: none;
+        }
+        .form-item {
+            margin-bottom: 18px;
+        }
+        label.form-label {
             display: block;
-            margin-bottom: 4px;
+            margin-bottom: 6px;
+            color: #374151;
             font-weight: 500;
         }
-        input,
+        input {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 16px;
+        }
         textarea {
             width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
+            min-height: 320px;
+            padding: 12px 14px;
+            border: 1px solid #d1d5db;
+            border-radius: 10px;
+            font-size: 16px;
+            resize: vertical;
         }
-        textarea {
-            min-height: 280px;
-            white-space: pre-wrap;
+        .check-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 16px;
         }
         button {
-            padding: 10px 18px;
-            background: #c7000b;
-            color: #fff;
+            width: 100%;
+            padding: 14px;
             border: none;
-            border-radius: 6px;
+            border-radius: 10px;
+            background-color: #2563eb;
+            color: white;
+            font-size: 16px;
             cursor: pointer;
-            font-size: 15px;
         }
         button:disabled {
-            background: #aaa;
+            background: #94a3b8;
             cursor: not-allowed;
         }
-        .result {
-            margin-top: 16px;
-            padding: 12px;
-            background: #f4f4f4;
-            border-radius: 6px;
-            white-space: pre-wrap;
-            word-break: break-all;
-        }
-        .back-wrap{
-            margin-top:30px;
-            text-align:center;
-        }
-        .back-home{
-            color:#2563eb;
-            text-decoration:none;
+        .tip-text {
+            margin-top:12px;
+            color:#6b7280;
+            font-size:14px;
         }
     </style>
 </head>
-
 <body>
-<h2>Markdown手记上传</h2>
+<div class="wrap">
+    <a href="index.html" class="back-link">← 返回首页</a>
+    <h1>Markdown手记上传</h1>
 
-<div class="item">
-    <label>
-        <input type="checkbox" id="useGlobalCfg" checked>
-        使用全局配置（取消为本页独立仓库/token）
-    </label>
-</div>
-<div class="item">
-    <label>仓库(用户名/仓库名)</label>
-    <input id="repoFull" placeholder="lishijie-me/100‑days2026" />
-</div>
-<div class="item">
-    <label>分支（一般main）</label>
-    <input id="branch" placeholder="main" value="main"/>
-</div>
-<div class="item">
-    <label>文件路径（可修改）</label>
-    <input id="filePath" placeholder="例如 20260822-手记.md" />
-</div>
-<div class="item">
-    <label>私人令牌 access_token</label>
-    <input id="token" type="password" placeholder="你的gitee私人令牌" />
-</div>
-<div class="item">
-    <label>手记Markdown内容</label>
-    <textarea id="mdContent" placeholder="在这里粘贴你的每日手记markdown……"></textarea>
+    <div class="check-row" style="display: flex;align-items: flex-start;gap: 6px;margin-bottom: 16px;flex-wrap: wrap;">
+        <input type="checkbox" id="useGlobalCheck" checked style="margin-top:2px;">
+        <label for="useGlobalCheck">使用全局配置（取消则为本页独立配置）</label>
+    </div>
+
+    <!-- 本页独立配置区域，默认隐藏 -->
+    <div id="pageConfigWrap" style="display:none;">
+        <div class="form-item">
+            <label class="form-label">仓库(用户名/仓库名)</label>
+            <input id="repo" placeholder="lishijie-me/100‑days2026">
+        </div>
+        <div class="form-item">
+            <label class="form-label">分支（一般main）</label>
+            <input id="branch" placeholder="main">
+        </div>
+        <div class="form-item">
+            <label class="form-label">私人令牌 access_token</label>
+            <input id="token" type="password" placeholder="gitee access_token">
+        </div>
+    </div>
+
+    <div class="form-item">
+        <label class="form-label">文件路径（可修改）</label>
+        <input id="filePath" placeholder="例如 20260822‑手记.md">
+    </div>
+
+    <div class="form-item">
+        <label class="form-label">手记Markdown内容</label>
+        <textarea id="mdContent" placeholder="在这里粘贴你的每日手记markdow……"></textarea>
+    </div>
+
+    <button id="submitBtn">提交上传</button>
+    <div class="tip-text">提交后直接写到Gitee仓库，同名文件会直接覆盖</div>
 </div>
 
-<div class="item">
-    <button id="uploadBtn">提交上传（同名文件自动覆盖）</button>
-</div>
-
-<div class="result" id="result"></div>
-
-<div class="back-wrap">
-    <a class="back-home" href="./index.html">← 返回工具导航首页</a>
-</div>
-
-<script src="./giteeApiUtils.js"></script>
+<script src="js/giteeApi.js"></script>
 <script>
-    const PAGE_LOCAL_KEY = "note_upload_local_config";
-    const PAGE_USE_GLOBAL_KEY = "note_upload_use_global";
+    const useGlobalCheck = document.getElementById('useGlobalCheck');
+    const pageConfigWrap = document.getElementById('pageConfigWrap');
+    const repoInput = document.getElementById('repo');
+    const branchInput = document.getElementById('branch');
+    const tokenInput = document.getElementById('token');
+    const filePathInput = document.getElementById('filePath');
+    const mdContentInput = document.getElementById('mdContent');
+    const submitBtn = document.getElementById('submitBtn');
 
-    const useGlobalCfgCb = document.getElementById("useGlobalCfg");
-    const repoFullInput = document.getElementById("repoFull");
-    const branchInput = document.getElementById("branch");
-    const filePathInput = document.getElementById("filePath");
-    const tokenInput = document.getElementById("token");
-    const mdContentInput = document.getElementById("mdContent");
-    const uploadBtn = document.getElementById("uploadBtn");
-    const resultEl = document.getElementById("result");
-
-    function getPageUseGlobal(){
-        const s = localStorage.getItem(PAGE_USE_GLOBAL_KEY);
-        return s === null ? true : (s === "true");
-    }
-    function savePageUseGlobal(flag){
-        localStorage.setItem(PAGE_USE_GLOBAL_KEY, String(flag));
-    }
-
-    function fillFormBySwitch(){
-        const useGlobal = getPageUseGlobal();
-        useGlobalCfgCb.checked = useGlobal;
-        let cfg;
-        if(useGlobal){
-            cfg = getGiteeGlobalConfig();
-        }else{
-            cfg = getPageLocalConfig(PAGE_LOCAL_KEY);
+    // 切换全局/独立配置，控制表单显示隐藏
+    useGlobalCheck.addEventListener('change', () => {
+        if (useGlobalCheck.checked) {
+            pageConfigWrap.style.display = 'none';
+        } else {
+            pageConfigWrap.style.display = 'block';
+            // 展开独立配置时预填充全局配置作为默认值
+            const tempGlobalCfg = getGiteeConfig(true, {});
+            repoInput.value = tempGlobalCfg.repo;
+            branchInput.value = tempGlobalCfg.branch;
+            tokenInput.value = tempGlobalCfg.token;
         }
-        repoFullInput.value = cfg.repo || "";
-        tokenInput.value = cfg.token || "";
-        branchInput.value = cfg.branch || "main";
-    }
+    });
 
-    function getCurrentCfg(){
-        if(getPageUseGlobal()){
-            return getGiteeGlobalConfig();
-        }else{
-            return getPageLocalConfig(PAGE_LOCAL_KEY);
-        }
-    }
-
-    function saveCurrentCfgFromInput(){
-        const cfg = {
-            repo: repoFullInput.value.trim(),
-            token: tokenInput.value.trim(),
-            branch: branchInput.value.trim() || "main"
+    submitBtn.addEventListener('click', async () => {
+        const useGlobal = useGlobalCheck.checked;
+        const pageCfg = {
+            repo: repoInput.value.trim(),
+            branch: branchInput.value.trim(),
+            token: tokenInput.value.trim()
         };
-        if(getPageUseGlobal()){
-            saveGiteeGlobalConfig(cfg);
-        }else{
-            savePageLocalConfig(PAGE_LOCAL_KEY, cfg);
+        const cfg = getGiteeConfig(useGlobal, pageCfg);
+
+        // 校验配置
+        if (useGlobal) {
+            if (!cfg.repo || !cfg.branch || !cfg.token) {
+                alert("⚠️ 使用全局配置，但配置为空，请前往【全局设置】页面填写！");
+                return;
+            }
+        } else {
+            if (!cfg.repo || !cfg.branch || !cfg.token) {
+                alert("⚠️ 当前页面独立配置：仓库、分支、token不能为空！");
+                return;
+            }
         }
-    }
 
-    // 日志封装，复用appendLog，直接输出到resultEl
-    function logMsg(msg){
-        appendLog(resultEl, msg);
-    }
-
-    window.onload = function(){
-        fillFormBySwitch();
-    };
-
-    useGlobalCfgCb.onchange = function(){
-        savePageUseGlobal(useGlobalCfgCb.checked);
-        fillFormBySwitch();
-    };
-
-    uploadBtn.onclick = async function(){
-        saveCurrentCfgFromInput();
-        const cfg = getCurrentCfg();
         const filePath = filePathInput.value.trim();
-        const mdText = mdContentInput.value;
-        if(!filePath){
-            logMsg("❌请填写文件路径");
+        const content = mdContentInput.value;
+        if (!filePath) {
+            alert("请填写文件路径，例如 20260822‑手记.md");
             return;
         }
-        if(!mdText){
-            logMsg("❌手记内容不能为空");
+        if (!content) {
+            alert("手记内容不能为空");
             return;
         }
-        setButtonsDisabled([uploadBtn], true);
-        // 读取旧sha
-        const getRet = await giteeGetFile(cfg, filePath, resultEl);
-        let sha = null;
-        if(getRet.ok && getRet.sha){
-            sha = getRet.sha;
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = "上传中……";
+        try {
+            // 调用giteeApi.js内提供的写入文件方法
+            const result = await uploadFileToGitee(cfg.repo, cfg.branch, filePath, content, cfg.token);
+            alert("✅ 提交成功！");
+        } catch (err) {
+            console.error(err);
+            alert("❌ 上传失败：" + err.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerText = "提交上传";
         }
-        const base64 = btoa(unescape(encodeURIComponent(mdText)));
-        const saveRet = await giteeSaveFile(cfg, filePath, base64, sha, "upload note", resultEl);
-        if(saveRet.ok){
-            logMsg("✅上传完成");
-        }
-        setButtonsDisabled([uploadBtn], false);
-    }
+    });
 </script>
 </body>
 </html>

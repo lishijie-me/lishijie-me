@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>随手歌单</title>
+    <title>云端待办</title>
     <style>
         * {
             margin: 0;
@@ -54,7 +54,7 @@
         }
         textarea {
             width: 100%;
-            min-height: 220px;
+            min-height: 260px;
             padding: 12px 14px;
             border: 1px solid #d1d5db;
             border-radius: 10px;
@@ -91,7 +91,7 @@
 <body>
 <div class="wrap">
     <a href="index.html" class="back-link">← 返回首页</a>
-    <h1>🎵 随手歌单</h1>
+    <h1>📋 云端待办</h1>
 
     <div class="check-row" style="display: flex;align-items: flex-start;gap: 6px;margin-bottom: 16px;flex-wrap: wrap;">
         <input type="checkbox" id="useGlobalCheck" checked style="margin-top:2px;">
@@ -115,16 +115,16 @@
     </div>
 
     <div class="form-item">
-        <label class="form-label">歌单文件路径</label>
-        <input id="filePath" value="songlist.md" placeholder="例如 songlist.md">
+        <label class="form-label">待办文件路径</label>
+        <input id="filePath" value="todo.md" placeholder="例如 todo.md">
     </div>
 
     <div class="form-item">
-        <label class="form-label">歌单Markdown内容</label>
-        <textarea id="mdContent" placeholder="填写歌曲，例如 - 《那些年》-胡夏"></textarea>
+        <label class="form-label">待办Markdown内容</label>
+        <textarea id="mdContent" placeholder="- [ ] 待办事项一"></textarea>
     </div>
 
-    <button id="submitBtn">保存歌单到云端</button>
+    <button id="submitBtn">保存待办到云端</button>
     <div class="tip-text">提交后直接写到Gitee仓库，同名文件会直接覆盖</div>
 </div>
 
@@ -139,13 +139,11 @@
     const mdContentInput = document.getElementById('mdContent');
     const submitBtn = document.getElementById('submitBtn');
 
-    // 切换全局/独立配置，控制表单显示隐藏
     useGlobalCheck.addEventListener('change', () => {
         if (useGlobalCheck.checked) {
             pageConfigWrap.style.display = 'none';
         } else {
             pageConfigWrap.style.display = 'block';
-            // 展开独立配置时预填充全局配置作为默认值
             const tempGlobalCfg = getGiteeConfig(true, {});
             repoInput.value = tempGlobalCfg.repo;
             branchInput.value = tempGlobalCfg.branch;
@@ -162,7 +160,6 @@
         };
         const cfg = getGiteeConfig(useGlobal, pageCfg);
 
-        // 校验配置
         if (useGlobal) {
             if (!cfg.repo || !cfg.branch || !cfg.token) {
                 alert("⚠️ 使用全局配置，但配置为空，请前往【全局设置】页面填写！");
@@ -178,11 +175,11 @@
         const filePath = filePathInput.value.trim();
         const content = mdContentInput.value;
         if (!filePath) {
-            alert("请填写歌单文件路径，例如 songlist.md");
+            alert("请填写待办文件路径，例如 todo.md");
             return;
         }
         if (!content) {
-            alert("歌单内容不能为空");
+            alert("待办内容不能为空");
             return;
         }
 
@@ -190,13 +187,13 @@
         submitBtn.innerText = "保存中……";
         try {
             const result = await uploadFileToGitee(cfg.repo, cfg.branch, filePath, content, cfg.token);
-            alert("✅ 歌单保存成功！");
+            alert("✅ 待办保存成功！");
         } catch (err) {
             console.error(err);
             alert("❌ 保存失败：" + err.message);
         } finally {
             submitBtn.disabled = false;
-            submitBtn.innerText = "保存歌单到云端";
+            submitBtn.innerText = "保存待办到云端";
         }
     });
 </script>

@@ -197,3 +197,25 @@ async function giteeSaveFile(cfg, filePath, base64Content, sha, commitMsg, logEl
         return { ok: false, newSha: null, respJson: null };
     }
 }
+
+/**
+ * 获取Gitee配置
+ * @param {boolean} useGlobal 是否启用全局配置
+ * @param {Object} pageCfg 页面独立配置 {repo,branch,token}
+ * @returns {{repo:string,branch:string,token:string}}
+ */
+function getGiteeConfig(useGlobal, pageCfg) {
+    const KEY_REPO = "gitee_default_repo";
+    const KEY_BRANCH = "gitee_default_branch";
+    const KEY_TOKEN = "gitee_default_token";
+
+    if (useGlobal) {
+        return {
+            repo: localStorage.getItem(KEY_REPO) || "",
+            branch: localStorage.getItem(KEY_BRANCH) || "",
+            token: localStorage.getItem(KEY_TOKEN) || ""
+        }
+    } else {
+        return pageCfg;
+    }
+}

@@ -1,221 +1,154 @@
 /**
- * giteeApiUtils.js
- * 公共Gitee工具：安全解析、日志、按钮禁用、限流检测、gitee基础API
- * 支持：全局共享配置 / 页面独立配置（由页面的复选框开关控制）
+ * giteeApi.js Gitee API请求封装
+ * 已合并原有utils逻辑，移除giteeApiUtils.js依赖
  */
-
-// ========== 全局共享配置（所有页面共用） ==========
-const GLOBAL_CONFIG_KEY = "gitee_global_config";
 
 /**
- * 获取全局配置
+ * 读取配置
+ * @param {boolean} useGlobal true=全局配置；false=页面独立配置
  */
-function getGiteeGlobalConfig() {
-    const str = localStorage.getItem(GLOBAL_CONFIG_KEY);
-    if (!str) return { repo: "", token: "", branch: "main" };
-    try {
-        return JSON.parse(str);
-    } catch (e) {
-        return { repo: "", token: "", branch: "main" };
+function getGiteeConfig(useGlobal) {
+    if (useGlobal) {
+        return {
+            token: localStorage.getItem("gitee_token"),
+            owner: localStorage.getItem("gitee_owner"),
+            repo: localStorage.getItem("gitee_repo")
+        };
+    } else {
+        return {
+            token: localStorage.getItem("page_gitee_token"),
+            owner: localStorage.getItem("page_gitee_owner"),
+            repo: localStorage.getItem("page_gitee_repo")
+        };
     }
 }
 
 /**
- * 保存全局配置
- * @param {Object} cfg {repo,token,branch}
+ * 获取文件sha，更新文件必须传入sha
+ * @param {string} token
+ * @param {string} owner
+ * @param {string} repo
+ * @param {string} filePath
+ * @returns {string|null} sha不存在返回null
  */
-function saveGiteeGlobalConfig(cfg) {
-    localStorage.setItem(GLOBAL_CONFIG_KEY, JSON.stringify(cfg));
-}
-
-/**
- * 获取页面私有配置
- * @param {string} pageKey 页面存储key，例如 "songlist_local_config"
- */
-function getPageLocalConfig(pageKey) {
-    const str = localStorage.getItem(pageKey);
-    if (!str) return { repo: "", token: "", branch: "main" };
-    try {
-        return JSON.parse(str);
-    } catch (e) {
-        return { repo: "", token: "", branch: "main" };
+async function getGiteeSha(token, owner, repo, filePath) {
+    const resp = await fetch(
+        `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}`,
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `token ${token}`
+            }
+        }
+    );
+    if (!resp.ok) {
+        return null;
     }
+    const data = await resp.json();
+    return data.sha;
 }
 
 /**
- * 保存页面私有配置
- * @param {string} pageKey
- * @param {Object} cfg
+ * 获取Gitee文件完整信息
+ * @param {string} token
+ * @param {string} owner
+ * @param {string} repo
+ * @param {string} filePath
  */
-function savePageLocalConfig(pageKey, cfg) {
-    localStorage.setItem(pageKey, JSON.stringify(cfg));
-}
-
-/**
- * 安全解析fetch响应，兼容Gitee限流返回HTML页面
- * @param {Response} resp
- * @returns {Promise<any>}
- */
-async function safeParseJson(resp) {
-    const ct = resp.headers.get("content-type") || "";
-    if (!ct.includes("application/json")) {
-        const text = await resp.text();
-        return { __isHtml: true, status: resp.status, text };
-    }
+async function getGiteeFile(token, owner, repo, filePath) {
+    const resp = await fetch(
+        `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}`,
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `token ${token}`
+            }
+        }
+    );
+    if (!resp.ok) throw new Error("文件读取失败");
     return await resp.json();
 }
 
 /**
- * 追加日志，自动带时间戳、滚动到底部
- * @param {HTMLElement} logEl 日志DOM容器
- * @param {string} msg 日志文本
+ * 上传/新建/覆盖文件
+ * @param {boolean} useGlobal 是否使用全局配置
+ * @param {string} filePath 仓库内路径
+ * @param {string} content 文本内容
+ * @param {string} message git提交备注
  */
-function appendLog(logEl, msg) {
-    const t = new Date().toLocaleTimeString();
-    logEl.innerText += `[${t}] ${msg}\n`;
-    logEl.scrollTop = logEl.scrollHeight;
-}
+async function uploadFileToGitee(useGlobal, filePath, content, message) {
+    const cfg = getGiteeConfig(useGlobal);
+    const { token, owner, repo } = cfg;
 
-/**
- * 批量设置一组按钮禁用/启用状态
- * @param {HTMLElement[]} btnList DOM按钮数组
- * @param {boolean} disabled true禁用，false启用
- */
-function setButtonsDisabled(btnList, disabled) {
-    btnList.forEach(btn => {
-        if (btn) btn.disabled = disabled;
-    });
-}
-
-/**
- * 检测429限流并输出日志
- * @param {Response} resp fetch响应
- * @param {HTMLElement} logEl 日志DOM
- * @returns {boolean} true = 触发限流
- */
-function checkRateLimit(resp, logEl) {
-    if (resp.status === 429) {
-        appendLog(logEl, "⚠️Gitee限流，请等待几分钟后重试");
-        return true;
+    if (!token || !owner || !repo) {
+        throw new Error("缺少Gitee配置，请检查令牌、仓库信息");
     }
-    return false;
-}
 
-// ========== Gitee基础API，需要传入当前页面实际cfg ==========
+    // 文本转base64
+    const base64Content = btoa(unescape(encodeURIComponent(content)));
+    const sha = await getGiteeSha(token, owner, repo, filePath);
 
-/**
- * 获取文件内容与sha
- * @param {Object} cfg {repo,token,branch} 当前生效配置
- * @param {string} filePath 仓库内文件路径
- * @param {HTMLElement} logEl
- * @returns {Promise<{ok:boolean, sha:string|null, content:string|null, respJson:any}>}
- */
-async function giteeGetFile(cfg, filePath, logEl) {
-    if (!cfg.repo || !cfg.token) {
-        appendLog(logEl, "❌请先填写仓库和Gitee Token");
-        return { ok: false, sha: null, content: null, respJson: null };
-    }
-    const url = `https://gitee.com/api/v5/repos/${cfg.repo}/contents/${encodeURIComponent(filePath)}?access_token=${cfg.token}&ref=${cfg.branch}`;
-    try {
-        const resp = await fetch(url);
-        if (resp.status === 404) {
-            return { ok: true, sha: null, content: null, respJson: null };
-        }
-        if (checkRateLimit(resp, logEl)) {
-            return { ok: false, sha: null, content: null, respJson: null };
-        }
-        const json = await safeParseJson(resp);
-        if (json.__isHtml) {
-            appendLog(logEl, `⚠️接口返回HTML，状态${json.status}，触发风控/限流`);
-            return { ok: false, sha: null, content: null, respJson: json };
-        }
-        if (!resp.ok) {
-            appendLog(logEl, `❌读取文件失败 ${JSON.stringify(json)}`);
-            return { ok: false, sha: null, content: null, respJson: json };
-        }
-        return {
-            ok: true,
-            sha: json.sha,
-            content: json.content,
-            respJson: json
-        };
-    } catch (err) {
-        appendLog(logEl, `读取文件异常:${err.message}`);
-        return { ok: false, sha: null, content: null, respJson: null };
-    }
-}
-
-/**
- * 创建 / 更新文件
- * @param {Object} cfg {repo,token,branch} 当前生效配置
- * @param {string} filePath 文件路径
- * @param {string} base64Content base64编码后的文本
- * @param {string|null} sha 已有文件传sha；新建传null
- * @param {string} commitMsg commit信息
- * @param {HTMLElement} logEl
- * @returns {Promise<{ok:boolean, newSha:string|null, respJson:any}>}
- */
-async function giteeSaveFile(cfg, filePath, base64Content, sha, commitMsg, logEl) {
-    if (!cfg.repo || !cfg.token) {
-        appendLog(logEl, "❌请先填写仓库和Gitee Token");
-        return { ok: false, newSha: null, respJson: null };
-    }
-    const url = `https://gitee.com/api/v5/repos/${cfg.repo}/contents/${encodeURIComponent(filePath)}`;
-    const payload = {
-        access_token: cfg.token,
-        branch: cfg.branch,
-        message: commitMsg,
+    const body = {
+        message: message,
         content: base64Content
     };
-    if (sha) payload.sha = sha;
-    const method = sha ? "PUT" : "POST";
-    try {
-        const resp = await fetch(url, {
-            method,
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(payload)
-        });
-        if (checkRateLimit(resp, logEl)) {
-            return { ok: false, newSha: null, respJson: null };
+    if (sha) body.sha = sha;
+
+    const res = await fetch(
+        `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}`,
+        {
+            method: "PUT",
+            headers: {
+                "Authorization": `token ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(body)
         }
-        const json = await safeParseJson(resp);
-        if (json.__isHtml) {
-            appendLog(logEl, "⚠️保存失败，接口返回HTML页面，风控限流");
-            return { ok: false, newSha: null, respJson: json };
-        }
-        if (!resp.ok) {
-            appendLog(logEl, `❌保存失败:${JSON.stringify(json)}`);
-            return { ok: false, newSha: null, respJson: json };
-        }
-        return {
-            ok: true,
-            newSha: json.content.sha,
-            respJson: json
-        };
-    } catch (err) {
-        appendLog(logEl, `保存异常:${err.message}`);
-        return { ok: false, newSha: null, respJson: null };
+    );
+
+    const result = await res.json();
+    if (!res.ok) {
+        throw new Error(result.message || "上传失败");
     }
+    return result;
 }
 
 /**
- * 获取Gitee配置
- * @param {boolean} useGlobal 是否启用全局配置
- * @param {Object} pageCfg 页面独立配置 {repo,branch,token}
- * @returns {{repo:string,branch:string,token:string}}
+ * 删除文件
+ * @param {boolean} useGlobal
+ * @param {string} filePath
+ * @param {string} message
  */
-function getGiteeConfig(useGlobal, pageCfg) {
-    const KEY_REPO = "gitee_default_repo";
-    const KEY_BRANCH = "gitee_default_branch";
-    const KEY_TOKEN = "gitee_default_token";
+async function deleteGiteeFile(useGlobal, filePath, message) {
+    const cfg = getGiteeConfig(useGlobal);
+    const { token, owner, repo } = cfg;
+    if (!token || !owner || !repo) throw new Error("Gitee配置缺失");
 
-    if (useGlobal) {
-        return {
-            repo: localStorage.getItem(KEY_REPO) || "",
-            branch: localStorage.getItem(KEY_BRANCH) || "",
-            token: localStorage.getItem(KEY_TOKEN) || ""
+    const sha = await getGiteeSha(token, owner, repo, filePath);
+    if (!sha) throw new Error("未找到目标文件，无法删除");
+
+    const res = await fetch(
+        `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}`,
+        {
+            method: "DELETE",
+            headers: {
+                "Authorization": `token ${token}`,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: message,
+                sha: sha
+            })
         }
-    } else {
-        return pageCfg;
-    }
+    );
+    const result = await res.json();
+    if (!res.ok) throw new Error(result.message || "删除失败");
+    return result;
 }
+
+// 挂载到全局window，页面可直接调用，不要加type="module"
+window.uploadFileToGitee = uploadFileToGitee;
+window.getGiteeSha = getGiteeSha;
+window.getGiteeFile = getGiteeFile;
+window.getGiteeConfig = getGiteeConfig;
+window.deleteGiteeFile = deleteGiteeFile;

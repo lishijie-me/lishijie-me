@@ -1,15 +1,13 @@
-// js/giteeApi.js (最终稳定版)
+// js/giteeApi.js (终版 · 实测通过)
 window.GITEE_API_BASE = 'https://gitee.com/api/v5';
 
 /**
- * 获取文件 SHA (指定分支)
+ * 获取文件 SHA（指定分支，使用 URL 参数认证）
  */
 window.getGiteeSha = async function (config) {
     const { token, owner, repo, path, branch = 'main' } = config;
-    const url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}`;
-    const resp = await fetch(url, {
-        headers: { 'Authorization': `token ${token}` }
-    });
+    const url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}&access_token=${token}`;
+    const resp = await fetch(url);
     if (resp.status === 404) return null;
     if (!resp.ok) {
         const err = await resp.text();
@@ -20,7 +18,7 @@ window.getGiteeSha = async function (config) {
 };
 
 /**
- * 上传或覆盖文件 (自动选择 POST/PUT，Token 同时使用 Header + URL 增强兼容)
+ * 上传或覆盖文件（主入口）
  */
 window.uploadFileToGitee = async function (config) {
     const { token, owner, repo, path, content, message = 'update via tool', branch = 'main' } = config;
@@ -35,71 +33,77 @@ window.uploadFileToGitee = async function (config) {
         console.warn('[upload] 获取 SHA 失败，当作新文件:', e.message);
     }
 
-    // 2. Base64 编码（处理中文）
-    const encodedContent = btoa(unescape(encodeURIComponent(content)));
+    // 2. Base64 编码
+    const encoded = btoa(unescape(encodeURIComponent(content)));
 
-    // 3. 构造请求体
+    // 3. 构造请求体（官方格式）
     const payload = {
-        content: encodedContent,
+        content: encoded,
         message: message,
         branch: branch
     };
     if (sha) payload.sha = sha;
 
-    // 4. 决定 HTTP 方法
+    // 4. 决定方法：有 sha → PUT，无 sha → POST
     const method = sha ? 'PUT' : 'POST';
-    // URL 同时携带 access_token 作为额外保障（Header 也保留）
     const url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?access_token=${token}`;
 
     console.log(`[upload] ${method} ${url}`, payload);
 
-    // 5. 发送请求
-    const resp = await fetch(url, {
+    // 5. 执行请求
+    let resp = await fetch(url, {
         method: method,
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `token ${token}`  // 保留 Header，双重保障
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     });
 
-    // 6. 处理成功
-    if (resp.ok) {
-        const result = await resp.json();
-        console.log('[upload] 成功:', result);
-        return result;
+    // 6. 如果返回 400 且错误为“文件名已存在”，尝试 fallback
+    if (resp.status === 400) {
+        const errText = await resp.text();
+        if (errText.includes('文件名已存在') || errText.includes('already exists')) {
+            console.warn('[upload] 收到“文件已存在”，尝试 fallback: 用 POST + sha');
+            // fallback: 强制用 POST 方法，但依然带 sha（某些老版本支持）
+            const fallbackPayload = { ...payload };
+            const fallbackResp = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(fallbackPayload)
+            });
+            if (fallbackResp.ok) {
+                const result = await fallbackResp.json();
+                console.log('[upload] fallback 成功:', result);
+                return result;
+            } else {
+                // fallback 也失败，则抛出原始错误
+                const fallbackErr = await fallbackResp.text();
+                throw new Error(`覆盖失败 (POST fallback): ${fallbackErr}`);
+            }
+        } else {
+            // 其他 400 错误
+            throw new Error(`上传失败 (400): ${errText}`);
+        }
     }
 
-    // 7. 失败处理
-    let errorMsg = '';
-    try {
-        const errData = await resp.json();
-        errorMsg = errData.message || JSON.stringify(errData);
-    } catch (_) {
-        errorMsg = await resp.text();
+    // 7. 处理其他状态
+    if (!resp.ok) {
+        const errText = await resp.text();
+        throw new Error(`上传失败 (${resp.status}): ${errText}`);
     }
-    throw new Error(`上传失败 (${resp.status}): ${errorMsg}`);
+
+    return await resp.json();
 };
 
-/**
- * 读取文件内容
- */
+// 读取和删除函数不变（为完整保留）
 window.getGiteeFile = async function (config) {
     const { token, owner, repo, path, branch = 'main' } = config;
     const url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?ref=${encodeURIComponent(branch)}&access_token=${token}`;
     const resp = await fetch(url);
     if (resp.status === 404) return null;
-    if (!resp.ok) {
-        const err = await resp.text();
-        throw new Error(`读取失败 (${resp.status}): ${err}`);
-    }
+    if (!resp.ok) throw new Error(`读取失败 (${resp.status}): ${await resp.text()}`);
     const data = await resp.json();
     return decodeURIComponent(escape(atob(data.content)));
 };
 
-/**
- * 删除文件
- */
 window.deleteGiteeFile = async function (config) {
     const { token, owner, repo, path, message = 'delete', branch = 'main' } = config;
     const sha = await window.getGiteeSha({ token, owner, repo, path, branch });
@@ -107,15 +111,9 @@ window.deleteGiteeFile = async function (config) {
     const url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}?access_token=${token}`;
     const resp = await fetch(url, {
         method: 'DELETE',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `token ${token}`
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ sha, message, branch })
     });
-    if (!resp.ok) {
-        const err = await resp.text();
-        throw new Error(`删除失败 (${resp.status}): ${err}`);
-    }
+    if (!resp.ok) throw new Error(`删除失败 (${resp.status}): ${await resp.text()}`);
     return await resp.json();
 };

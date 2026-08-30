@@ -1,8 +1,10 @@
-// js/giteeApi.js (增强版)
+// js/giteeApi.js (最终稳定版)
 window.GITEE_API_BASE = 'https://gitee.com/api/v5';
 
 /**
- * 获取文件 SHA (增强错误处理)
+ * 获取文件 SHA
+ * 返回: string | null (不存在时返回 null)
+ * 抛出: 仅当发生网络/权限等不可恢复错误时抛出
  */
 window.getGiteeSha = async function (config) {
     const { token, owner, repo, path } = config;
@@ -12,7 +14,7 @@ window.getGiteeSha = async function (config) {
     });
 
     if (resp.status === 404) {
-        return null; // 文件不存在
+        return null;
     }
 
     if (!resp.ok) {
@@ -23,34 +25,30 @@ window.getGiteeSha = async function (config) {
         } catch (_) {
             errorText = await resp.text();
         }
-        throw new Error(`获取文件 SHA 失败 (${resp.status}): ${errorText}`);
+        // 非 404 错误抛出，让上层处理
+        throw new Error(`获取 SHA 失败 (${resp.status}): ${errorText}`);
     }
 
     const data = await resp.json();
-    if (!data.sha) {
-        throw new Error('Gitee 返回的数据中缺少 sha 字段');
-    }
-    return data.sha;
+    return data.sha || null;
 };
 
 /**
- * 上传或覆盖文件 (支持自动重试)
+ * 上传或覆盖文件（带自动重试）
  */
-window.uploadFileToGitee = async function (config, retry = true) {
+window.uploadFileToGitee = async function (config, isRetry = false) {
     const { token, owner, repo, path, content, message = 'update via tool' } = config;
     if (!content) throw new Error('文件内容不能为空');
 
-    // 1. 获取 SHA
-    let sha;
+    // 1. 获取 SHA（若获取失败，继续尝试，可能文件不存在或临时问题）
+    let sha = null;
     try {
         sha = await window.getGiteeSha(config);
+        console.log(`[upload] 获取 SHA: ${sha || '文件不存在'}`);
     } catch (err) {
-        // 如果是 404 则视为新文件，否则直接抛出
-        if (err.message.includes('404')) {
-            sha = null;
-        } else {
-            throw new Error(`无法检查文件是否存在: ${err.message}`);
-        }
+        // 获取 SHA 出错，但不中断上传，将 sha 置 null，尝试直接上传
+        console.warn('[upload] 获取 SHA 出错，将继续尝试上传 (可能文件不存在):', err.message);
+        sha = null;
     }
 
     // 2. 构建请求
@@ -64,42 +62,51 @@ window.uploadFileToGitee = async function (config, retry = true) {
     };
     if (sha) payload.sha = sha;
 
+    // 3. 发送请求
     const resp = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
     });
 
-    // 3. 处理响应
+    // 4. 处理成功
     if (resp.ok) {
         return await resp.json();
     }
 
-    // 4. 错误处理 & 自动重试 (针对“文件已存在”)
+    // 5. 处理失败响应
     let errorBody;
     try {
         errorBody = await resp.json();
     } catch (_) {
         errorBody = { message: await resp.text() };
     }
-
-    // 如果是“文件已存在”错误 (可能 message 包含 "already exists" 或 "文件已存在")
     const errorMsg = errorBody.message || '';
-    if (resp.status === 409 || errorMsg.includes('already exists') || errorMsg.includes('文件已存在')) {
-        if (retry) {
-            // 重新获取 SHA (可能之前因某些原因未获取到)
+
+    // 6. 判断是否为“文件已存在”错误（状态码 400 或 409，且消息包含关键词）
+    const isFileExistsError = (resp.status === 400 || resp.status === 409) &&
+        (errorMsg.includes('文件名已存在') || errorMsg.includes('already exists') || errorMsg.includes('文件已存在'));
+
+    if (isFileExistsError) {
+        if (!isRetry) {
+            // 重试一次：重新获取 SHA 并再次上传
+            console.warn('[upload] 文件已存在，尝试重试 (重新获取 SHA)');
             try {
+                // 强制重新获取 SHA
                 const newSha = await window.getGiteeSha(config);
-                if (newSha) {
-                    // 重试一次，但关闭重试标志防止死循环
-                    return await window.uploadFileToGitee({ ...config, sha: newSha }, false);
-                } else {
-                    throw new Error('文件确实存在但无法获取其 SHA，请检查权限或路径');
+                if (!newSha) {
+                    throw new Error('文件确实存在，但无法获取其 SHA，请检查权限或路径');
                 }
+                // 使用新 SHA 重试，关闭再次重试标志
+                return await window.uploadFileToGitee(
+                    { ...config, sha: newSha },
+                    true // 标记为重试，防止死循环
+                );
             } catch (retryErr) {
-                throw new Error(`覆盖文件失败: ${retryErr.message}`);
+                throw new Error(`覆盖文件失败 (重试后): ${retryErr.message}`);
             }
         } else {
+            // 重试后仍然失败
             throw new Error(`文件已存在且无法覆盖: ${errorMsg}`);
         }
     }
@@ -109,7 +116,7 @@ window.uploadFileToGitee = async function (config, retry = true) {
 };
 
 /**
- * 读取文件内容 (不变)
+ * 读取文件内容
  */
 window.getGiteeFile = async function (config) {
     const { token, owner, repo, path } = config;
@@ -133,7 +140,7 @@ window.getGiteeFile = async function (config) {
 };
 
 /**
- * 删除文件 (不变)
+ * 删除文件
  */
 window.deleteGiteeFile = async function (config) {
     const { token, owner, repo, path, message = 'delete' } = config;

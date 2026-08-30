@@ -86,6 +86,7 @@
             msgDiv.innerHTML = `<span style="color:#10b981;">✅ 上传成功！ <a href="${result.content.html_url}" target="_blank">查看文件</a></span>`;
         } catch (err) {
             msgDiv.innerHTML = `<span style="color:#ef4444;">❌ 上传失败: ${err.message}</span>`;
+            console.error(err); // 可在控制台查看详细堆栈
         } finally {
             uploadBtn.disabled = false;
             uploadBtn.textContent = '🚀 提交上传';

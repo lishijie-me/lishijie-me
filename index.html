@@ -3,137 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>我的个人工具集</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-        }
-
-        body {
-            background: linear-gradient(135deg, #e8edf7 0%, #f5f7fa 100%);
-            min-height: 100vh;
-            padding: 60px 20px;
-        }
-
-        .container {
-            max-width: 640px;
-            margin: 0 auto;
-        }
-
-        h1 {
-            text-align: center;
-            color: #1f2937;
-            margin-bottom:12px;
-            font-size: 28px;
-            font-weight: 600;
-        }
-        .motto{
-            text-align:center;
-            color:#4b5563;
-            font-size:15px;
-            margin-bottom:40px;
-        }
-
-        .tool-card {
-            background: #ffffff;
-            border-radius: 14px;
-            margin-bottom: 18px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-            transition: all 0.25s ease;
-        }
-
-        .tool-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.15);
-        }
-
-        .tool-card a {
-            display: block;
-            padding: 22px 24px;
-            text-decoration: none;
-            color: #1f2937;
-            font-size: 17px;
-        }
-
-        .tool-card .desc {
-            font-size: 13px;
-            color: #6b7280;
-            margin-top: 6px;
-        }
-        .footer{
-            margin-top:60px;
-            text-align:center;
-            font-size:13px;
-            color:#6b7280;
-        }
-
-        /* 新增工具直接复制下面这一块 */
-        /*
-        <div class="tool-card">
-            <a href="./xxx.html">
-                🚀 工具名称
-                <div class="desc">工具简单描述</div>
-            </a>
-        </div>
-        */
-    </style>
+    <title>个人静态工具集</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 <div class="container">
-    <h1>🧰 我的个人工具集</h1>
-    <div class="motto">靡不有初，鲜克有终</div>
-
-    <div class="tool-card">
-        <a href="./about.html">
-            👤 关于我
-            <div class="desc">个人简介｜技术栈｜当前目标｜百日挑战记录</div>
-        </a>
+    <div class="page-header">
+        <h1>🛠️ 工具集</h1>
     </div>
 
-    <div class="tool-card">
-        <a href="./noteUpload.html">
-            📝 手记上传工具
-            <div class="desc">快速写Markdown手记，直接提交到仓库，支持同名覆盖</div>
+    <div class="tool-grid">
+        <a href="noteUpload.html" class="tool-card">
+            <span class="icon">📝</span>
+            <span class="title">手记上传</span>
+            <span class="desc">Markdown 云端存储</span>
+        </a>
+        <a href="songList.html" class="tool-card">
+            <span class="icon">🎵</span>
+            <span class="title">随手歌单</span>
+            <span class="desc">收藏好听的歌曲</span>
+        </a>
+        <a href="todoList.html" class="tool-card">
+            <span class="icon">✅</span>
+            <span class="title">云端待办</span>
+            <span class="desc">任务持久化</span>
+        </a>
+        <a href="about.html" class="tool-card">
+            <span class="icon">👤</span>
+            <span class="title">关于我</span>
+            <span class="desc">个人履历</span>
+        </a>
+        <!-- 全局设置卡片，样式完全一致 -->
+        <a href="settings.html" class="tool-card">
+            <span class="icon">⚙️</span>
+            <span class="title">全局设置</span>
+            <span class="desc">Gitee 令牌 & 仓库</span>
         </a>
     </div>
-
-    <div class="tool-card">
-        <a href="todoList.html">
-            ☁️ 云端待办
-            <div class="desc">快速新增待办，云端多设备同步，支持勾选完成、删除</div>
-        </a>
-    </div>
-
-    <div class="tool-card">
-        <a href="./songList.html">
-            🎵 随手歌单
-            <div class="desc">快速记录喜欢的歌曲，保存到云端</div>
-        </a>
-    </div>
-
-    <div class="tool-card">
-        <a href="./settings.html">
-            ⚙️ 全局设置
-            <div class="desc">统一维护仓库与令牌，全部工具共用一套配置</div>
-        </a>
-    </div>
-
-    <!-- 后续新增工具就复制 tool‑card 模块 -->
-    <!--
-    <div class="tool-card">
-        <a href="./demo.html">
-            🔧 待新增小助手
-            <div class="desc">这里写工具简介</div>
-        </a>
-    </div>
-    -->
 
     <div class="footer">
-        <p>© 2026.8.22 - present | 个人工具集 <br/>
-            Fake it until you make it. </p>
+        <p>© 2026 个人静态工具集 · 数据存储于 Gitee · 保持热爱</p>
     </div>
 </div>
 </body>

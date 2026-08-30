@@ -3,199 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Markdown手记上传</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
-        body {
-            background: #f5f7fa;
-            padding: 24px 16px;
-            min-height: 100vh;
-        }
-        .wrap {
-            max-width: 640px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 32px;
-            border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-        }
-        h1 {
-            text-align: center;
-            color: #1f2937;
-            margin-bottom: 24px;
-            font-size: 24px;
-        }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #2563eb;
-            text-decoration: none;
-        }
-        .form-item {
-            margin-bottom: 18px;
-        }
-        label.form-label {
-            display: block;
-            margin-bottom: 6px;
-            color: #374151;
-            font-weight: 500;
-        }
-        input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-        textarea {
-            width: 100%;
-            min-height: 320px;
-            padding: 12px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 16px;
-            resize: vertical;
-        }
-        .check-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 16px;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            background-color: #2563eb;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:disabled {
-            background: #94a3b8;
-            cursor: not-allowed;
-        }
-        .tip-text {
-            margin-top:12px;
-            color:#6b7280;
-            font-size:14px;
-        }
-    </style>
+    <title>手记上传</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="wrap">
-    <a href="index.html" class="back-link">← 返回首页</a>
-    <h1>Markdown手记上传</h1>
-
-    <div class="check-row" style="display: flex;align-items: flex-start;gap: 6px;margin-bottom: 16px;flex-wrap: wrap;">
-        <input type="checkbox" id="useGlobalCheck" checked style="margin-top:2px;">
-        <label for="useGlobalCheck">使用全局配置（取消则为本页独立配置）</label>
+<div class="container">
+    <div class="page-header">
+        <h1>📝 手记上传</h1>
+        <a href="index.html" class="back-link">← 返回首页</a>
     </div>
 
-    <!-- 本页独立配置区域，默认隐藏 -->
-    <div id="pageConfigWrap" style="display:none;">
-        <div class="form-item">
-            <label class="form-label">仓库(用户名/仓库名)</label>
-            <input id="repo" placeholder="lishijie-me/100‑days2026">
+    <div class="panel">
+        <!-- 双模式切换 -->
+        <div class="config-toggle-area">
+            <label>
+                <input type="checkbox" id="useIndependentConfig"> 使用本页独立配置 (取消则使用全局)
+            </label>
+            <div class="independent-config" id="independentConfigArea">
+                <div class="form-group">
+                    <label>Token</label>
+                    <input type="password" id="localToken" placeholder="独立令牌">
+                </div>
+                <div class="form-group">
+                    <label>Owner</label>
+                    <input type="text" id="localOwner" placeholder="独立所有者">
+                </div>
+                <div class="form-group">
+                    <label>Repo</label>
+                    <input type="text" id="localRepo" placeholder="独立仓库">
+                </div>
+            </div>
         </div>
-        <div class="form-item">
-            <label class="form-label">分支（一般main）</label>
-            <input id="branch" placeholder="main">
+
+        <div class="form-group">
+            <label>云端文件路径 (如: notes/daily.md)</label>
+            <input type="text" id="filePath" placeholder="例如: notes/2026-08-30.md">
         </div>
-        <div class="form-item">
-            <label class="form-label">私人令牌 access_token</label>
-            <input id="token" type="password" placeholder="gitee access_token">
+        <div class="form-group">
+            <label>Markdown 内容</label>
+            <textarea id="markdownContent" placeholder="今天做了什么..."></textarea>
         </div>
+
+        <button class="btn" id="uploadBtn">🚀 提交上传</button>
+        <div id="uploadMsg" style="margin-top: 1rem;"></div>
     </div>
 
-    <div class="form-item">
-        <label class="form-label">文件路径（可修改）</label>
-        <input id="filePath" placeholder="例如 20260822‑手记.md">
-    </div>
-
-    <div class="form-item">
-        <label class="form-label">手记Markdown内容</label>
-        <textarea id="mdContent" placeholder="在这里粘贴你的每日手记markdow……"></textarea>
-    </div>
-
-    <button id="submitBtn">提交上传</button>
-    <div class="tip-text">提交后直接写到Gitee仓库，同名文件会直接覆盖</div>
+    <div class="footer"><p>© 2026 个人静态工具集</p></div>
 </div>
 
 <script src="js/giteeApi.js"></script>
-<script>
-    const useGlobalCheck = document.getElementById('useGlobalCheck');
-    const pageConfigWrap = document.getElementById('pageConfigWrap');
-    const repoInput = document.getElementById('repo');
-    const branchInput = document.getElementById('branch');
-    const tokenInput = document.getElementById('token');
-    const filePathInput = document.getElementById('filePath');
-    const mdContentInput = document.getElementById('mdContent');
-    const submitBtn = document.getElementById('submitBtn');
-
-    // 切换全局/独立配置，控制表单显示隐藏
-    useGlobalCheck.addEventListener('change', () => {
-        if (useGlobalCheck.checked) {
-            pageConfigWrap.style.display = 'none';
-        } else {
-            pageConfigWrap.style.display = 'block';
-            // 展开独立配置时预填充全局配置作为默认值
-            const tempGlobalCfg = getGiteeConfig(true);
-            repoInput.value = tempGlobalCfg.repo ?? "";
-            tokenInput.value = tempGlobalCfg.token ?? "";
-        }
-    });
-
-    submitBtn.addEventListener('click', async () => {
-        const useGlobal = useGlobalCheck.checked;
-        const filePath = filePathInput.value.trim();
-        const content = mdContentInput.value.trim();
-
-        if (!filePath) {
-            alert("请填写文件路径，例如 20260822‑手记.md");
-            return;
-        }
-        if (!content) {
-            alert("手记内容不能为空");
-            return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.innerText = "上传中……";
-        try {
-            if(useGlobal){
-                // 使用全局配置，直接调用
-                await uploadFileToGitee(true, filePath, content, "更新手记");
-            }else{
-                // 页面独立配置：表单输入，不调用getGiteeConfig，手动组装
-                const token = tokenInput.value.trim();
-                const ownerRepo = repoInput.value.trim();
-                if(!token || !ownerRepo){
-                    throw new Error("令牌/仓库不能为空");
-                }
-                // 注意：当前giteeApi.js的uploadFileToGitee只读取localStorage，不支持外部传入token/repo！
-                // 临时方案：把页面表单值临时写入page_ localStorage，再调用接口
-                localStorage.setItem("page_gitee_token", token);
-                localStorage.setItem("page_gitee_owner", ownerRepo.split("/")[0]);
-                localStorage.setItem("page_gitee_repo", ownerRepo.split("/")[1]);
-                await uploadFileToGitee(false, filePath, content, "更新手记");
-            }
-            alert("✅ 提交成功！");
-        } catch (err) {
-            console.error(err);
-            alert("❌ 上传失败：" + err.message);
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerText = "提交上传";
-        }
-    });
-</script>
-
+<script src="js/configHelper.js"></script>
+<script src="js/noteUpload.js"></script>
 </body>
 </html>

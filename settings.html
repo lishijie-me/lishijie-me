@@ -4,87 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>全局设置</title>
-    <style>
-        * {margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif;}
-        body {background:#f5f7fa;padding:40px 20px;min-height:100vh;}
-        .wrap {max-width:640px;margin:0 auto;background:#fff;padding:32px;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
-        h1 {text-align:center;color:#1f2937;margin-bottom:28px;font-size:24px;}
-        .form-item {margin-bottom:20px;}
-        label {display:block;margin-bottom:6px;color:#374151;font-weight:500;}
-        input {width:100%;padding:12px 14px;border:1px solid #d1d5db;border-radius:10px;font-size:16px;}
-        .btn-group {margin-top:32px;display:flex;gap:12px;flex-wrap:wrap;}
-        button {flex:1;min-width:120px;padding:12px;border:none;border-radius:10px;font-size:16px;cursor:pointer;}
-        .btn-save {background:#2563eb;color:#fff;}
-        .btn-clear {background:#ef4444;color:#fff;}
-        .tip {margin-top:16px;color:#6b7280;font-size:14px;line-height:1.6;}
-        .back-link {display:inline-block;margin-bottom:24px;color:#2563eb;text-decoration:none;}
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="wrap">
-    <a href="index.html" class="back-link">← 返回首页</a>
-    <h1>⚙️ 全局Gitee设置</h1>
-
-    <div class="form-item">
-        <label>仓库（用户名/仓库名）</label>
-        <input id="repoInput" placeholder="例如 lishijie-me/100‑days2026">
-    </div>
-    <div class="form-item">
-        <label>分支</label>
-        <input id="branchInput" placeholder="一般 main">
-    </div>
-    <div class="form-item">
-        <label>Access Token</label>
-        <input id="tokenInput" type="password" placeholder="gitee私人令牌">
+<div class="container">
+    <div class="page-header">
+        <h1>⚙️ 全局设置</h1>
+        <a href="index.html" class="back-link">← 返回首页</a>
     </div>
 
-    <div class="btn-group">
-        <button class="btn-save" id="saveBtn">保存全局配置</button>
-        <button class="btn-clear" id="clearBtn">清空全部配置</button>
+    <div class="panel">
+        <p style="color: #6b7280; margin-bottom: 1.5rem;">配置 Gitee 仓库信息，所有工具默认复用。Token 仅存储在您浏览器本地。</p>
+
+        <div class="form-group">
+            <label>私人令牌 (Token)</label>
+            <input type="password" id="globalToken" placeholder="请输入 Gitee 私人令牌">
+        </div>
+        <div class="form-group">
+            <label>仓库所有者 (Owner)</label>
+            <input type="text" id="globalOwner" placeholder="用户名或组织名">
+        </div>
+        <div class="form-group">
+            <label>仓库名称 (Repo)</label>
+            <input type="text" id="globalRepo" placeholder="仓库名">
+        </div>
+
+        <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <button class="btn" id="saveGlobalBtn">💾 保存全局配置</button>
+            <button class="btn btn-outline" id="clearGlobalBtn">清除配置</button>
+        </div>
+        <div id="settingsMsg" style="margin-top: 1rem; font-weight: 500;"></div>
     </div>
 
-    <div class="tip">
-        <p>说明：保存后，手记上传、云端待办、随手歌单默认复用这套配置。</p>
-        <p>如需单页面使用独立仓库/token，在对应页面取消勾选「使用全局配置」。</p>
+    <div class="footer">
+        <p>© 2026 个人静态工具集</p>
     </div>
 </div>
 
-<script>
-    // 存储key
-    const KEY_REPO = "gitee_default_repo";
-    const KEY_BRANCH = "gitee_default_branch";
-    const KEY_TOKEN = "gitee_default_token";
-
-    const repoInput = document.getElementById('repoInput');
-    const branchInput = document.getElementById('branchInput');
-    const tokenInput = document.getElementById('tokenInput');
-    const saveBtn = document.getElementById('saveBtn');
-    const clearBtn = document.getElementById('clearBtn');
-
-    // 页面加载读取已有配置
-    window.onload = function(){
-        repoInput.value = localStorage.getItem(KEY_REPO) || '';
-        branchInput.value = localStorage.getItem(KEY_BRANCH) || '';
-        tokenInput.value = localStorage.getItem(KEY_TOKEN) || '';
-    }
-
-    saveBtn.onclick = function(){
-        localStorage.setItem(KEY_REPO, repoInput.value.trim());
-        localStorage.setItem(KEY_BRANCH, branchInput.value.trim());
-        localStorage.setItem(KEY_TOKEN, tokenInput.value.trim());
-        alert("✅ 全局配置已保存！");
-    }
-
-    clearBtn.onclick = function(){
-        if(!confirm("确定清空所有Gitee全局配置？")) return;
-        localStorage.removeItem(KEY_REPO);
-        localStorage.removeItem(KEY_BRANCH);
-        localStorage.removeItem(KEY_TOKEN);
-        repoInput.value = '';
-        branchInput.value = '';
-        tokenInput.value = '';
-        alert("已清空");
-    }
-</script>
+<script src="js/configHelper.js"></script>
+<script src="js/settings.js"></script>
 </body>
 </html>

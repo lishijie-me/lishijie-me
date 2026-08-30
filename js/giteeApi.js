@@ -1,154 +1,83 @@
-/**
- * giteeApi.js Gitee API请求封装
- * 已合并原有utils逻辑，移除giteeApiUtils.js依赖
- */
+// js/giteeApi.js
+window.GITEE_API_BASE = 'https://gitee.com/api/v5';
 
 /**
- * 读取配置
- * @param {boolean} useGlobal true=全局配置；false=页面独立配置
+ * 获取文件SHA (用于更新)
  */
-function getGiteeConfig(useGlobal) {
-    if (useGlobal) {
-        return {
-            token: localStorage.getItem("gitee_token"),
-            owner: localStorage.getItem("gitee_owner"),
-            repo: localStorage.getItem("gitee_repo")
-        };
-    } else {
-        return {
-            token: localStorage.getItem("page_gitee_token"),
-            owner: localStorage.getItem("page_gitee_owner"),
-            repo: localStorage.getItem("page_gitee_repo")
-        };
-    }
-}
-
-/**
- * 获取文件sha，更新文件必须传入sha
- * @param {string} token
- * @param {string} owner
- * @param {string} repo
- * @param {string} filePath
- * @returns {string|null} sha不存在返回null
- */
-async function getGiteeSha(token, owner, repo, filePath) {
-    const resp = await fetch(
-        `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}`,
-        {
-            method: "GET",
-            headers: {
-                "Authorization": `token ${token}`
-            }
-        }
-    );
-    if (!resp.ok) {
-        return null;
-    }
+window.getGiteeSha = async function (config) {
+    const { token, owner, repo, path } = config;
+    const url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+    const resp = await fetch(url, {
+        headers: { 'Authorization': `token ${token}` }
+    });
+    if (resp.status === 404) return null;
+    if (!resp.ok) throw new Error(`获取SHA失败 (${resp.status})`);
     const data = await resp.json();
     return data.sha;
-}
+};
 
 /**
- * 获取Gitee文件完整信息
- * @param {string} token
- * @param {string} owner
- * @param {string} repo
- * @param {string} filePath
+ * 上传/覆盖文件 (核心)
  */
-async function getGiteeFile(token, owner, repo, filePath) {
-    const resp = await fetch(
-        `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}`,
-        {
-            method: "GET",
-            headers: {
-                "Authorization": `token ${token}`
-            }
-        }
-    );
-    if (!resp.ok) throw new Error("文件读取失败");
-    return await resp.json();
-}
+window.uploadFileToGitee = async function (config) {
+    const { token, owner, repo, path, content, message = 'update via tool' } = config;
+    if (!content) throw new Error('内容不能为空');
 
-/**
- * 上传/新建/覆盖文件
- * @param {boolean} useGlobal 是否使用全局配置
- * @param {string} filePath 仓库内路径
- * @param {string} content 文本内容
- * @param {string} message git提交备注
- */
-async function uploadFileToGitee(useGlobal, filePath, content, message) {
-    const cfg = getGiteeConfig(useGlobal);
-    const { token, owner, repo } = cfg;
+    const sha = await window.getGiteeSha(config);
+    const url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
 
-    if (!token || !owner || !repo) {
-        throw new Error("缺少Gitee配置，请检查令牌、仓库信息");
-    }
-
-    // 文本转base64
+    // 处理中文UTF-8 Base64
     const base64Content = btoa(unescape(encodeURIComponent(content)));
-    const sha = await getGiteeSha(token, owner, repo, filePath);
 
-    const body = {
-        message: message,
-        content: base64Content
+    const payload = {
+        access_token: token,
+        content: base64Content,
+        message: message
     };
-    if (sha) body.sha = sha;
+    if (sha) payload.sha = sha;
 
-    const res = await fetch(
-        `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}`,
-        {
-            method: "PUT",
-            headers: {
-                "Authorization": `token ${token}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(body)
-        }
-    );
+    const resp = await fetch(url, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+    });
 
-    const result = await res.json();
-    if (!res.ok) {
-        throw new Error(result.message || "上传失败");
+    if (!resp.ok) {
+        const err = await resp.json().catch(() => ({}));
+        throw new Error(err.message || `上传失败 (${resp.status})`);
     }
-    return result;
-}
+    return await resp.json();
+};
+
+/**
+ * 读取文件内容 (返回文本)
+ */
+window.getGiteeFile = async function (config) {
+    const { token, owner, repo, path } = config;
+    const url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+    const resp = await fetch(url, {
+        headers: { 'Authorization': `token ${token}` }
+    });
+    if (resp.status === 404) return null;
+    if (!resp.ok) throw new Error(`读取失败 (${resp.status})`);
+    const data = await resp.json();
+    // 解码Base64
+    return decodeURIComponent(escape(atob(data.content)));
+};
 
 /**
  * 删除文件
- * @param {boolean} useGlobal
- * @param {string} filePath
- * @param {string} message
  */
-async function deleteGiteeFile(useGlobal, filePath, message) {
-    const cfg = getGiteeConfig(useGlobal);
-    const { token, owner, repo } = cfg;
-    if (!token || !owner || !repo) throw new Error("Gitee配置缺失");
-
-    const sha = await getGiteeSha(token, owner, repo, filePath);
-    if (!sha) throw new Error("未找到目标文件，无法删除");
-
-    const res = await fetch(
-        `https://gitee.com/api/v5/repos/${owner}/${repo}/contents/${encodeURIComponent(filePath)}`,
-        {
-            method: "DELETE",
-            headers: {
-                "Authorization": `token ${token}`,
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                message: message,
-                sha: sha
-            })
-        }
-    );
-    const result = await res.json();
-    if (!res.ok) throw new Error(result.message || "删除失败");
-    return result;
-}
-
-// 挂载到全局window，页面可直接调用，不要加type="module"
-window.uploadFileToGitee = uploadFileToGitee;
-window.getGiteeSha = getGiteeSha;
-window.getGiteeFile = getGiteeFile;
-window.getGiteeConfig = getGiteeConfig;
-window.deleteGiteeFile = deleteGiteeFile;
+window.deleteGiteeFile = async function (config) {
+    const { token, owner, repo, path, message = 'delete' } = config;
+    const sha = await window.getGiteeSha(config);
+    if (!sha) return null;
+    const url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+    const resp = await fetch(url, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ access_token: token, sha, message })
+    });
+    if (!resp.ok) throw new Error('删除失败');
+    return await resp.json();
+};

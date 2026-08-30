@@ -4,162 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>关于我</title>
-    <style>
-        *{margin:0;padding:0;box-sizing:border-box;font-family:system-ui,-apple-system,sans-serif;}
-        body{background:#f5f7fa;padding:40px 20px;min-height:100vh;}
-        .wrap{max-width:640px;margin:0 auto;background:#fff;padding:32px;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.06);}
-        h1{text-align:center;color:#1f2937;margin-bottom:24px;font-size:26px;}
-        section{margin-bottom:24px;}
-
-        /* 折叠标题样式 */
-        .collapse-header{
-            display:flex;
-            align-items:center;
-            gap:6px;
-            cursor:pointer;
-            font-size:17px;
-            color:#2563eb;
-            margin-bottom:10px;
-            border-left:4px solid #2563eb;
-            padding-left:10px;
-            user-select:none;
-        }
-        .collapse-icon{
-            transition: transform 0.2s ease;
-        }
-        .collapse-wrap{
-            overflow:hidden;
-            transition: max-height 0.35s ease;
-        }
-        .collapse-closed .collapse-icon{
-            transform: rotate(-90deg);
-        }
-        .collapse-closed .collapse-wrap{
-            max-height:0 !important;
-        }
-
-        p{color:#374151;line-height:1.7;font-size:15px;}
-        ul{padding-left:20px;margin-top:8px;}
-        li{line-height:1.8;color:#374151;font-size:15px;}
-        .back{margin-top:36px;text-align:center;}
-        .back a{color:#2563eb;text-decoration:none;}
-        .copyright{margin-top:30px;text-align:center;font-size:12px;color:#9ca3af;}
-        /* 文章链接样式 */
-        .article-item{
-            padding:12px 14px;
-            background:#f7f9fc;
-            border-radius:10px;
-            margin-bottom:10px;
-        }
-        .article-item a{
-            color:#2563eb;
-            text-decoration:none;
-            font-weight:500;
-        }
-        .article-item a:hover{
-            text-decoration:underline;
-        }
-        .article-desc{
-            font-size:13px;
-            color:#6b7280;
-            margin-top:4px;
-        }
-        .footer{
-            margin-top:60px;
-            text-align:center;
-            font-size:13px;
-            color:#6b7280;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="wrap">
-    <h1>👤 关于我</h1>
-
-    <section>
-        <h2>个人简介</h2>
-        <p>全栈开发，兼顾后端业务、前端交互与中间件实践。<br/>
-            热爱技术，喜欢折腾小工具。持续学习，坚持自我提升，希望把想法变成可以实际使用的小应用。</p>
-    </section>
-
-    <section>
-        <h2>技术栈</h2>
-        <ul>
-            <li>后端：Java、SpringBoot、MySQL，熟悉底层索引、事务机制</li>
-            <li>前端：HTML、JavaScript、React，可独立完成页面交互与工具开发</li>
-            <li>中间件：消息队列、缓存、网关等，了解分布式相关实践</li>
-            <li>其他：Linux运维、Git命令、AIGC辅助开发实践</li>
-        </ul>
-    </section>
-
-    <section>
-        <h2>当前目标</h2>
-        <ul>
-            <li>百日挑战：减脂、吉他练习、早睡早起、阅读学习</li>
-            <li>打磨全栈技术能力，拓宽知识边界</li>
-            <li>坚持记录待办与日常，稳步推进每一件事</li>
-        </ul>
-    </section>
-
-    <!-- ==========我的手记文章 - 默认折叠========== -->
-    <section class="collapse-container collapse-closed">
-        <div class="collapse-header">
-            <span class="collapse-icon">▼</span>
-            <span>📑 我的手记文章（点击展开）</span>
-        </div>
-        <div class="collapse-wrap">
-            <div class="article-item">
-                <a href="https://gitee.com/lishijie-me/lishijie-me/blob/main/%E6%AD%8C%E5%8D%95.md" target="_blank">我的歌单</a>
-                <div class="article-desc">我喜欢的歌单</div>
-            </div>
-            <div class="article-item">
-                <a href="shturl.cc/8BQdlutE你的用户名/100-days2026/blob/main/article2.md" target="_blank">第二篇手记示例</a>
-                <div class="article-desc">记录学习总结、复盘、思考</div>
-            </div>
-            <!--新增文章复制这个块即可
-            <div class="article-item">
-                <a href="文章完整地址" target="_blank">文章标题</a>
-                <div class="article-desc">简短描述</div>
-            </div>
-            -->
-        </div>
-    </section>
-
-    <!-- 项目与实践 - 默认折叠 -->
-    <section class="collapse-container collapse-closed">
-        <div class="collapse-header">
-            <span class="collapse-icon">▼</span>
-            <span>📂 项目与实践（点击展开）</span>
-        </div>
-        <div class="collapse-wrap">
-            <ul>
-                <li>个人工具集：一套基于Gitee存储的网页小工具，包含待办、歌单、手记等，前后端全部自研，浏览器直接运行。</li>
-                <li>业务系统开发：负责接口开发、数据库设计、中间件调优、线上问题排查，具备完整服务端实战经验。</li>
-                <li>全栈实践：从后端服务、中间件组件到前端页面独立实现，兼顾功能、交互与细节体验。</li>
-                <li>自我实践：保持持续输入输出，技术复盘、生活记录、健身乐器同步推进，在工作与生活之间寻找平衡。</li>
-            </ul>
-        </div>
-    </section>
-
-    <div class="back">
-        <a href="./index.html">← 返回工具导航首页</a>
+<div class="container">
+    <div class="page-header">
+        <h1>👤 关于我</h1>
+        <a href="index.html" class="back-link">← 返回首页</a>
     </div>
-    <div class="footer">
-        <p>© 2026.8.22 - present | 个人工具集 <br/>
-            Fake it until you make it. </p>
+
+    <div class="panel" style="padding-bottom:0.5rem;">
+        <p style="font-size:1.1rem; margin-bottom:1.5rem;">一只热爱编码、写作与生活的开发者。</p>
+
+        <details>
+            <summary>📌 个人简介</summary>
+            <div class="content">
+                <p>全栈开发者，多年互联网从业经验。热衷于开源、效率工具与知识管理。</p>
+            </div>
+        </details>
+
+        <details>
+            <summary>🧰 技术栈</summary>
+            <div class="content">
+                <ul>
+                    <li>前端：JavaScript / TypeScript / React / Vue</li>
+                    <li>后端：Node.js / Python / Go</li>
+                    <li>数据库：MySQL / PostgreSQL / MongoDB</li>
+                    <li>运维：Docker / Linux / Nginx</li>
+                </ul>
+            </div>
+        </details>
+
+        <details>
+            <summary>📅 个人履历</summary>
+            <div class="content">
+                <ul>
+                    <li><strong>2020 - 至今</strong> · 某科技公司 技术负责人</li>
+                    <li><strong>2017 - 2020</strong> · 某互联网企业 高级开发工程师</li>
+                    <li><strong>2015 - 2017</strong> · 初创团队 全栈开发</li>
+                </ul>
+            </div>
+        </details>
+
+        <details>
+            <summary>📬 联系方式</summary>
+            <div class="content">
+                <p>GitHub: <a href="https://github.com/lishijie-me" target="_blank">lishijie-me</a></p>
+                <p>📧 邮箱: lishijie@example.com</p>
+            </div>
+        </details>
     </div>
+
+    <div class="footer"><p>© 2026 个人静态工具集 · 行稳致远</p></div>
 </div>
-
-<script>
-    //折叠点击逻辑
-    document.querySelectorAll('.collapse-container').forEach(cnt=>{
-        const header = cnt.querySelector('.collapse-header');
-        header.onclick = ()=>{
-            cnt.classList.toggle('collapse-closed');
-            const icon = cnt.querySelector('.collapse-icon');
-            icon.textContent = cnt.classList.contains('collapse-closed') ? '▶' : '▼';
-        }
-    })
-</script>
+<script src="js/about.js"></script>
 </body>
 </html>

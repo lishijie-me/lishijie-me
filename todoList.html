@@ -4,198 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>云端待办</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: system-ui, -apple-system, sans-serif;
-        }
-        body {
-            background: #f5f7fa;
-            padding: 24px 16px;
-            min-height: 100vh;
-        }
-        .wrap {
-            max-width: 640px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 32px;
-            border-radius: 16px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
-        }
-        h1 {
-            text-align: center;
-            color: #1f2937;
-            margin-bottom: 24px;
-            font-size: 24px;
-        }
-        .back-link {
-            display: inline-block;
-            margin-bottom: 20px;
-            color: #2563eb;
-            text-decoration: none;
-        }
-        .form-item {
-            margin-bottom: 18px;
-        }
-        label.form-label {
-            display: block;
-            margin-bottom: 6px;
-            color: #374151;
-            font-weight: 500;
-        }
-        input {
-            width: 100%;
-            padding: 12px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 16px;
-        }
-        textarea {
-            width: 100%;
-            min-height: 260px;
-            padding: 12px 14px;
-            border: 1px solid #d1d5db;
-            border-radius: 10px;
-            font-size: 16px;
-            resize: vertical;
-        }
-        .check-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            margin-bottom: 16px;
-        }
-        button {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            background-color: #2563eb;
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-        }
-        button:disabled {
-            background: #94a3b8;
-            cursor: not-allowed;
-        }
-        .tip-text {
-            margin-top:12px;
-            color:#6b7280;
-            font-size:14px;
-        }
-    </style>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-<div class="wrap">
-    <a href="index.html" class="back-link">← 返回首页</a>
-    <h1>📋 云端待办</h1>
-
-    <div class="check-row" style="display: flex;align-items: flex-start;gap: 6px;margin-bottom: 16px;flex-wrap: wrap;">
-        <input type="checkbox" id="useGlobalCheck" checked style="margin-top:2px;">
-        <label for="useGlobalCheck">使用全局配置（取消则为本页独立配置）</label>
+<div class="container">
+    <div class="page-header">
+        <h1>✅ 云端待办</h1>
+        <a href="index.html" class="back-link">← 返回首页</a>
     </div>
 
-    <!-- 本页独立配置区域，默认隐藏 -->
-    <div id="pageConfigWrap" style="display:none;">
-        <div class="form-item">
-            <label class="form-label">仓库(用户名/仓库名)</label>
-            <input id="repo" placeholder="lishijie-me/100‑days2026">
+    <div class="panel">
+        <div class="config-toggle-area">
+            <label><input type="checkbox" id="useIndependentConfig"> 使用本页独立配置</label>
+            <div class="independent-config" id="independentConfigArea">
+                <div class="form-group"><label>Token</label><input type="password" id="localToken"></div>
+                <div class="form-group"><label>Owner</label><input type="text" id="localOwner"></div>
+                <div class="form-group"><label>Repo</label><input type="text" id="localRepo"></div>
+            </div>
         </div>
-        <div class="form-item">
-            <label class="form-label">分支（一般main）</label>
-            <input id="branch" placeholder="main">
+        <p style="color: #6b7280; margin-bottom: 1rem;">📂 固定存储路径: <code>todo.md</code></p>
+
+        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem;">
+            <input type="text" id="todoInput" placeholder="输入新任务" style="flex:1; padding:0.6rem; border:1px solid #d1d5db; border-radius:8px;">
+            <button class="btn" id="addTodoBtn">➕ 添加</button>
         </div>
-        <div class="form-item">
-            <label class="form-label">私人令牌 access_token</label>
-            <input id="token" type="password" placeholder="gitee access_token">
-        </div>
+        <button class="btn btn-outline" id="refreshTodoBtn" style="margin-bottom:1rem;">🔄 刷新</button>
+        <div id="todoListContainer"></div>
+        <div id="todoMsg" style="margin-top:1rem;"></div>
     </div>
-
-    <div class="form-item">
-        <label class="form-label">待办文件路径</label>
-        <input id="filePath" value="todo.md" placeholder="例如 todo.md">
-    </div>
-
-    <div class="form-item">
-        <label class="form-label">待办Markdown内容</label>
-        <textarea id="mdContent" placeholder="- [ ] 待办事项一"></textarea>
-    </div>
-
-    <button id="submitBtn">保存待办到云端</button>
-    <div class="tip-text">提交后直接写到Gitee仓库，同名文件会直接覆盖</div>
+    <div class="footer"><p>© 2026 个人静态工具集</p></div>
 </div>
 
 <script src="js/giteeApi.js"></script>
-<script>
-    const useGlobalCheck = document.getElementById('useGlobalCheck');
-    const pageConfigWrap = document.getElementById('pageConfigWrap');
-    const repoInput = document.getElementById('repo');
-    const branchInput = document.getElementById('branch');
-    const tokenInput = document.getElementById('token');
-    const filePathInput = document.getElementById('filePath');
-    const mdContentInput = document.getElementById('mdContent');
-    const submitBtn = document.getElementById('submitBtn');
-
-    useGlobalCheck.addEventListener('change', () => {
-        if (useGlobalCheck.checked) {
-            pageConfigWrap.style.display = 'none';
-        } else {
-            pageConfigWrap.style.display = 'block';
-            const tempGlobalCfg = getGiteeConfig(true, {});
-            repoInput.value = tempGlobalCfg.repo;
-            branchInput.value = tempGlobalCfg.branch;
-            tokenInput.value = tempGlobalCfg.token;
-        }
-    });
-
-    submitBtn.addEventListener('click', async () => {
-        const useGlobal = useGlobalCheck.checked;
-        const pageCfg = {
-            repo: repoInput.value.trim(),
-            branch: branchInput.value.trim(),
-            token: tokenInput.value.trim()
-        };
-        const cfg = getGiteeConfig(useGlobal, pageCfg);
-
-        if (useGlobal) {
-            if (!cfg.repo || !cfg.branch || !cfg.token) {
-                alert("⚠️ 使用全局配置，但配置为空，请前往【全局设置】页面填写！");
-                return;
-            }
-        } else {
-            if (!cfg.repo || !cfg.branch || !cfg.token) {
-                alert("⚠️ 当前页面独立配置：仓库、分支、token不能为空！");
-                return;
-            }
-        }
-
-        const filePath = filePathInput.value.trim();
-        const content = mdContentInput.value;
-        if (!filePath) {
-            alert("请填写待办文件路径，例如 todo.md");
-            return;
-        }
-        if (!content) {
-            alert("待办内容不能为空");
-            return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.innerText = "保存中……";
-        try {
-            const result = await uploadFileToGitee(cfg.repo, cfg.branch, filePath, content, cfg.token);
-            alert("✅ 待办保存成功！");
-        } catch (err) {
-            console.error(err);
-            alert("❌ 保存失败：" + err.message);
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerText = "保存待办到云端";
-        }
-    });
-</script>
+<script src="js/configHelper.js"></script>
+<script src="js/todoList.js"></script>
 </body>
 </html>

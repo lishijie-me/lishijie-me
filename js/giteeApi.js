@@ -1,8 +1,8 @@
-// js/giteeApi.js (支持分支指定，默认 main)
+// js/giteeApi.js (最终版 - 动态 POST/PUT)
 window.GITEE_API_BASE = 'https://gitee.com/api/v5';
 
 /**
- * 获取文件 SHA (支持分支参数)
+ * 获取文件 SHA
  */
 window.getGiteeSha = async function (config) {
     const { token, owner, repo, path, branch = 'main' } = config;
@@ -28,13 +28,13 @@ window.getGiteeSha = async function (config) {
 };
 
 /**
- * 上传或覆盖文件 (带自动重试 + 分支指定)
+ * 上传或覆盖文件（自动选择 POST/PUT）
  */
 window.uploadFileToGitee = async function (config, isRetry = false) {
     const { token, owner, repo, path, content, message = 'update via tool', branch = 'main' } = config;
     if (!content) throw new Error('文件内容不能为空');
 
-    // 1. 获取 SHA（指定分支）
+    // 1. 获取 SHA
     let sha = null;
     try {
         sha = await window.getGiteeSha({ ...config, branch });
@@ -44,22 +44,24 @@ window.uploadFileToGitee = async function (config, isRetry = false) {
         sha = null;
     }
 
-    // 2. 构建请求体
-    const url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
+    // 2. 构建基础请求参数
+    const baseUrl = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
     const base64Content = btoa(unescape(encodeURIComponent(content)));
 
     const payload = {
         content: base64Content,
         message: message,
-        branch: branch   // 关键：指定分支
+        branch: branch
     };
     if (sha) payload.sha = sha;
 
-    console.log('[upload] 请求 Payload:', JSON.stringify(payload, null, 2));
+    // 3. 决定 HTTP 方法：有 sha 用 PUT，无 sha 用 POST
+    const method = sha ? 'PUT' : 'POST';
+    console.log(`[upload] 使用 ${method} 方法，Payload:`, JSON.stringify(payload, null, 2));
 
-    // 3. 发送请求（使用 Authorization 头）
-    const resp = await fetch(url, {
-        method: 'POST',
+    // 4. 发送请求
+    const resp = await fetch(baseUrl, {
+        method: method,
         headers: {
             'Content-Type': 'application/json',
             'Authorization': `token ${token}`
@@ -67,14 +69,14 @@ window.uploadFileToGitee = async function (config, isRetry = false) {
         body: JSON.stringify(payload)
     });
 
-    // 4. 处理成功
+    // 5. 处理成功
     if (resp.ok) {
         const result = await resp.json();
         console.log('[upload] 上传成功:', result);
         return result;
     }
 
-    // 5. 处理失败响应
+    // 6. 处理失败
     let errorBody;
     try {
         errorBody = await resp.json();
@@ -82,40 +84,37 @@ window.uploadFileToGitee = async function (config, isRetry = false) {
         errorBody = { message: await resp.text() };
     }
     const errorMsg = errorBody.message || '';
-
     console.error('[upload] 请求失败:', resp.status, errorMsg);
 
-    // 6. 判断是否为“文件已存在”错误
+    // 7. 特殊错误：如果使用 POST 且返回“文件已存在”，则改用 PUT 重试
     const isFileExistsError = (resp.status === 400 || resp.status === 409) &&
         (errorMsg.includes('文件名已存在') || errorMsg.includes('already exists') || errorMsg.includes('文件已存在'));
 
-    if (isFileExistsError) {
-        if (!isRetry) {
-            console.warn('[upload] 文件已存在，尝试重试 (重新获取 SHA)');
+    if (isFileExistsError && method === 'POST' && !isRetry) {
+        console.warn('[upload] 文件已存在，切换为 PUT 方法重试');
+        // 重新获取 SHA（可能之前没获取到）
+        let newSha = sha;
+        if (!newSha) {
             try {
-                const newSha = await window.getGiteeSha({ ...config, branch });
-                if (!newSha) {
-                    throw new Error('文件确实存在，但无法获取其 SHA，请检查权限或路径');
-                }
-                return await window.uploadFileToGitee(
-                    { ...config, sha: newSha, branch },
-                    true
-                );
-            } catch (retryErr) {
-                throw new Error(`覆盖文件失败 (重试后): ${retryErr.message}`);
-            }
-        } else {
-            throw new Error(`文件已存在且无法覆盖: ${errorMsg}`);
+                newSha = await window.getGiteeSha({ ...config, branch });
+            } catch (_) {}
         }
+        if (!newSha) {
+            throw new Error('文件确实存在，但无法获取其 SHA，请检查权限');
+        }
+        // 用 PUT 重试，并标记为重试
+        return await window.uploadFileToGitee(
+            { ...config, sha: newSha, branch },
+            true
+        );
     }
 
-    // 其他错误
+    // 其他错误（包括 PUT 方法失败）
     throw new Error(`上传失败 (${resp.status}): ${errorMsg}`);
 };
 
-/**
- * 读取文件内容 (支持分支)
- */
+// getGiteeFile 和 deleteGiteeFile 与之前相同，但也可支持分支（略，可沿用之前版本）
+// 为了完整，我附上完整代码（与之前保持一致）
 window.getGiteeFile = async function (config) {
     const { token, owner, repo, path, branch = 'main' } = config;
     let url = `${window.GITEE_API_BASE}/repos/${owner}/${repo}/contents/${encodeURIComponent(path)}`;
@@ -138,9 +137,6 @@ window.getGiteeFile = async function (config) {
     return decodeURIComponent(escape(atob(data.content)));
 };
 
-/**
- * 删除文件 (支持分支)
- */
 window.deleteGiteeFile = async function (config) {
     const { token, owner, repo, path, message = 'delete', branch = 'main' } = config;
     const sha = await window.getGiteeSha({ ...config, branch });
